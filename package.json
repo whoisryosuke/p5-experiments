@@ -1,0 +1,63 @@
+{
+  "name": "r3f-next-starter",
+  "version": "1.0.0",
+  "authors": [
+    "Ryosuke Hana <https://twitter.com/whoisryosuke>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "node": ">=14"
+  },
+  "scripts": {
+    "lint": "yarn prettier && yarn eslint",
+    "eslint": "next lint --fix --dir src",
+    "prettier": "prettier -l \"./src/**/*.{js,jsx,ts,tsx,md}\" --write",
+    "dev": "next dev",
+    "build": "next build",
+    "export": "EXPORT=true next build && EXPORT=true next export",
+    "analyze": "ANALYZE=true next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@react-three/a11y": "^3.0.0",
+    "@react-three/drei": "^9.115.0",
+    "@react-three/fiber": "^8.13.4",
+    "@react-three/postprocessing": "^2.15.1",
+    "babel-plugin-glsl": "^1.0.0",
+    "glsl-random": "^0.0.5",
+    "leva": "^0.9.27",
+    "maath": "^0.10.8",
+    "next": "^12.1.6",
+    "p5": "^1.11.1",
+    "postprocessing": "^6.36.3",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "react-is": "^18.1.0",
+    "styled-components": "^6.1.13",
+    "three": "^0.169.0",
+    "three-stdlib": "^2.33.0",
+    "tone": "^15.0.4",
+    "webmidi": "^3.1.11",
+    "zustand": "^4.5.0"
+  },
+  "devDependencies": {
+    "@next/bundle-analyzer": "^12.0.10",
+    "@types/node": "^17.0.39",
+    "@types/p5": "^1.7.6",
+    "@types/react": "^18.0.10",
+    "@types/three": "^0.169.0",
+    "eslint": "^8.17.0",
+    "eslint-config-next": "^12.0.10",
+    "eslint-config-prettier": "^8.3.0",
+    "file-loader": "^6.2.0",
+    "glslify": "^7.1.1",
+    "glslify-loader": "^2.0.0",
+    "next-compose-plugins": "^2.2.1",
+    "next-offline": "^5.0.5",
+    "prettier": "^2.6.2",
+    "raw-loader": "^4.0.2",
+    "typescript": "^4.7.3",
+    "url-loader": "^4.1.1"
+  }
+}

@@ -1,0 +1,17 @@
+.option {
+  margin-bottom: 1rem;
+}
+
+.sidebar_header {
+  margin-bottom: 0.5rem;
+}
+
+.dropdown {
+  background: #333;
+  color: #e5e5e5;
+  border: 3px solid #ccc;
+  border-radius: 32px;
+
+  width: 100%;
+  padding: 0.5rem 1rem;
+}
