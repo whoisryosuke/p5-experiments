@@ -17,7 +17,7 @@ const CircleRepeatExample = (props: Props) => {
       console.log("setup canvas");
       p.createCanvas(window.innerWidth, window.innerHeight);
       p.stroke(255); // Set line drawing color to white
-      p.frameRate(30);
+      p.frameRate(60);
     };
     p.keyPressed = () => {
       saveArt(p, FILENAME);
@@ -32,6 +32,8 @@ const CircleRepeatExample = (props: Props) => {
       const initialScale = 10;
       const resolution = 40;
       const REPEAT_CIRLE_NUM = 1000;
+      const SPEED = 25;
+      const animation = p.frameCount / SPEED;
 
       for (let index = 1; index <= REPEAT_CIRLE_NUM + 1; index++) {
         const biggestEdge = p.width < p.height ? p.width : p.height;
@@ -44,7 +46,7 @@ const CircleRepeatExample = (props: Props) => {
           resolution,
           startX,
           startY,
-          p.radians(60 * index)
+          p.radians(60 * index + animation)
         );
       }
     };
