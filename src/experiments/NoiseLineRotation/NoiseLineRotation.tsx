@@ -2,6 +2,7 @@ import React, { CSSProperties, Suspense, useEffect, useRef } from "react";
 import p5 from "p5";
 import { BASE_COLORS } from "themes/colors/base";
 import { radToDeg } from "three/src/math/MathUtils";
+import { saveArt } from "@/helpers/drawing/saveArt";
 
 type Props = {
   width?: CSSProperties["width"];
@@ -44,11 +45,7 @@ const NoiseLineRotation = ({ width, height, ...props }: Props) => {
       p.frameRate(30);
     };
     p.keyPressed = () => {
-      if (p.key === "s") {
-        const date = new Date();
-        const time = `${date.getFullYear()}${date.getMonth()}${date.getDay()}-${date.getMilliseconds()}`;
-        p.saveCanvas(`${FILENAME}-${time}`);
-      }
+      saveArt(p, FILENAME);
     };
     p.draw = () => {
       // console.log('drawing!!')
