@@ -65,6 +65,8 @@ const generateSketch = async () => {
   console.log("Done! 🤘");
   console.log(`Created new sketch component: ${componentDestinationPath}`);
   console.log(`Created new sketch page: ${pageDestinationPath}`);
+  const url = `http://localhost:3000/experiments/${pageName}`;
+  console.log(`Live preview: ${url}`);
 };
 
 generateSketch();
