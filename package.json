@@ -17,7 +17,8 @@
     "build": "next build",
     "export": "EXPORT=true next build && EXPORT=true next export",
     "analyze": "ANALYZE=true next build",
-    "start": "next start"
+    "start": "next start",
+    "sketch:new": "node scripts/generate-sketch.js"
   },
   "dependencies": {
     "@react-three/a11y": "^3.0.0",
