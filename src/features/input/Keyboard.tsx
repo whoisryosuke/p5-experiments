@@ -10,11 +10,11 @@ const KEY_MAP: Record<KeyboardEvent["key"], Note> = {
   b: "G4",
   n: "A4",
   m: "B4",
-  s: "C#4",
-  d: "D#4",
-  g: "F#4",
-  h: "G#4",
-  j: "A#4",
+  s: "Cb4",
+  d: "Db4",
+  g: "Fb4",
+  h: "Gb4",
+  j: "Ab4",
 
   // 5th octave - top row of keyboard
   q: "C5",
@@ -24,11 +24,11 @@ const KEY_MAP: Record<KeyboardEvent["key"], Note> = {
   t: "G5",
   y: "A5",
   u: "B5",
-  2: "C#5",
-  3: "D#5",
-  5: "F#5",
-  6: "G#5",
-  7: "A#5",
+  2: "Cb5",
+  3: "Db5",
+  5: "Fb5",
+  6: "Gb5",
+  7: "Ab5",
 };
 
 type Props = {};
