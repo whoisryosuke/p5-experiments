@@ -119,40 +119,54 @@ const MidiKeyParticles = (props: Props) => {
       // Draw and animate notes
       p.strokeWeight(4);
       const drawNotes = [...notes];
-      drawNotes
-        .filter((note) => note && !note.destroy)
-        .forEach((note) => {
-          // Animate the note upwards
-          const startY = note.initialPosition.y;
-          const fadeUpAmount = (time - note.created) / NOTE_DURATION;
-          const fadeDownAmount =
-            (time - note.created) / (NOTE_DURATION * NOTE_LINGER_DURATION);
-          const animate = Math.max(
-            Math.min(
-              note.destroy ? 1 - Math.abs(1 - fadeDownAmount) : fadeUpAmount,
-              1
-            ),
-            -1
-          );
-          const y = p.lerp(startY, startY - 300, animate);
-          p.push();
-          const fillColor = p.color(BASE_COLORS[`${KEY_COLORS[note.note]}-7`]);
-          fillColor.setAlpha(animate * 255);
-          const strokeColor = p.color(
-            BASE_COLORS[`${KEY_COLORS[note.note]}-5`]
-          );
-          strokeColor.setAlpha(animate * 255);
-          p.stroke(strokeColor);
-          p.fill(fillColor);
-          p.rect(
-            note.initialPosition.x,
-            y,
-            noteWidth,
-            NOTE_HEIGHT,
-            NOTE_BORDER_RADIUS
-          );
-          p.pop();
-        });
+      drawNotes.forEach((note) => {
+        // Animate the note upwards
+        const startY = note.initialPosition.y;
+        const fadeUpAnimation = {
+          start: {
+            y: startY,
+            opacity: 0,
+          },
+          end: { y: startY - 300, opacity: 1 },
+          animate: Math.min((time - note.created) / NOTE_DURATION, 1),
+        };
+        const fadeDownAnimation = {
+          start: { y: startY - 300, opacity: 1 },
+          end: { y: startY - 600, opacity: 0 },
+          animate: Math.min(
+            (time - note.created - NOTE_DURATION) / NOTE_DURATION,
+            1
+          ),
+        };
+        const currentAnimation = note.destroy
+          ? fadeDownAnimation
+          : fadeUpAnimation;
+        const y = p.lerp(
+          currentAnimation.start.y,
+          currentAnimation.end.y,
+          currentAnimation.animate
+        );
+        p.push();
+        const fillColor = p.color(BASE_COLORS[`${KEY_COLORS[note.note]}-7`]);
+        const opacity = p.lerp(
+          currentAnimation.start.opacity,
+          currentAnimation.end.opacity,
+          currentAnimation.animate
+        );
+        fillColor.setAlpha(opacity * 255);
+        const strokeColor = p.color(BASE_COLORS[`${KEY_COLORS[note.note]}-5`]);
+        strokeColor.setAlpha(opacity * 255);
+        p.stroke(strokeColor);
+        p.fill(fillColor);
+        p.rect(
+          note.initialPosition.x,
+          y,
+          noteWidth,
+          NOTE_HEIGHT,
+          NOTE_BORDER_RADIUS
+        );
+        p.pop();
+      });
 
       // Destroy notes
       for (let index = 0; index < notes.length; index++) {
@@ -163,7 +177,7 @@ const MidiKeyParticles = (props: Props) => {
       }
       for (let index = 0; index < notes.length; index++) {
         const note = notes[index];
-        if (time - note.created >= NOTE_DURATION * 2) {
+        if (time - note.created >= NOTE_DURATION * 3) {
           // Gotta delete using splice (and not `delete` because it leaves an undefined slot and breaks draw calls above)
           notes.splice(index, 1);
         }
