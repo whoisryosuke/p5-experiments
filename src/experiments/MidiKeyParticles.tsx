@@ -158,10 +158,13 @@ const MidiKeyParticles = (props: Props) => {
         strokeColor.setAlpha(opacity * 255);
         p.stroke(strokeColor);
         p.fill(fillColor);
+        const isBlackKey = note.note.includes("b");
         p.rect(
-          note.initialPosition.x,
+          isBlackKey
+            ? note.initialPosition.x + noteWidth / 4
+            : note.initialPosition.x,
           y,
-          noteWidth,
+          isBlackKey ? noteWidth / 2 : noteWidth,
           NOTE_HEIGHT,
           NOTE_BORDER_RADIUS
         );
