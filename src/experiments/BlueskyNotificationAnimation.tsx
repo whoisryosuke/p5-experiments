@@ -12,6 +12,7 @@ type Notification = {
   time: string;
   msg: string;
   active: boolean;
+  destroy: boolean;
   created: number;
   initialPosition: {
     x: number;
@@ -33,13 +34,13 @@ function getTextWidth(text, font) {
   const context = canvas.getContext("2d");
   context.font = font;
   const metrics = context.measureText(text);
-  console.log("measuring text", metrics);
   canvas.remove();
   return metrics.width;
 }
 
 const FILENAME = "BlueskyNotificationAnimation";
 const NOTIFICATION_DURATION = 300;
+const NOTIFICATION_LINGER_DURATION = 10;
 
 const BlueskyNotificationAnimation = (props: Props) => {
   const loaded = useRef(false);
@@ -84,6 +85,7 @@ const BlueskyNotificationAnimation = (props: Props) => {
                 time,
                 msg,
                 active: false,
+                destroy: false,
                 created: 0,
                 initialPosition: {
                   x: 0,
@@ -121,14 +123,22 @@ const BlueskyNotificationAnimation = (props: Props) => {
             x: p.random(-500, p.width - 200),
             y: p.random(-500, p.height + 50),
           };
-          console.log(
-            "spawning notification",
-            notification,
-            notifications[nextNotificationIndex]
-          );
           lastSpawn = currentTime;
         }
       }
+
+      // Check to delete notifications
+      notifications.forEach((notification, index) => {
+        if (
+          notification.active &&
+          (currentTime - notification.created) /
+            (NOTIFICATION_DURATION * NOTIFICATION_LINGER_DURATION) >=
+            1
+        ) {
+          console.log("fade out", notification);
+          notifications[index].destroy = true;
+        }
+      });
 
       // Show and animate all notifications
       notifications
@@ -150,9 +160,19 @@ const BlueskyNotificationAnimation = (props: Props) => {
 
           const x = notification.initialPosition.x;
           const startY = notification.initialPosition.y;
-          const animate = Math.min(
-            (currentTime - notification.created) / NOTIFICATION_DURATION,
-            1
+          const fadeUpAmount =
+            (currentTime - notification.created) / NOTIFICATION_DURATION;
+          const fadeDownAmount =
+            (currentTime - notification.created) /
+            (NOTIFICATION_DURATION * NOTIFICATION_LINGER_DURATION);
+          const animate = Math.max(
+            Math.min(
+              notification.destroy
+                ? 1 - Math.abs(1 - fadeDownAmount)
+                : fadeUpAmount,
+              1
+            ),
+            -1
           );
           const y = p.lerp(startY + 30, startY, animate);
 
@@ -194,6 +214,15 @@ const BlueskyNotificationAnimation = (props: Props) => {
 
       p.strokeWeight(3);
       p.stroke(p.color(BASE_COLORS["gray-5"]));
+
+      // Actually delete notifications
+      // notifications = notifications.filter(
+      //   (notification) =>
+      //     notification.destroy &&
+      //     (currentTime - notification.created) /
+      //       (NOTIFICATION_DURATION * (NOTIFICATION_LINGER_DURATION + 1)) >=
+      //       1
+      // );
     };
   };
 
