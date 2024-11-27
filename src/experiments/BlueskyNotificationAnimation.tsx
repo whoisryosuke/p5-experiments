@@ -19,6 +19,25 @@ type Notification = {
   };
 };
 
+/**
+ * Uses canvas.measureText to compute and return the width of the given text of given font in pixels.
+ *
+ * @param {String} text The text to be rendered.
+ * @param {String} font The css font descriptor that text is to be rendered with (e.g. "bold 14px verdana").
+ *
+ * @see https://stackoverflow.com/questions/118241/calculate-text-width-with-javascript/21015393#21015393
+ */
+function getTextWidth(text, font) {
+  // re-use canvas object for better performance
+  const canvas = document.createElement("canvas");
+  const context = canvas.getContext("2d");
+  context.font = font;
+  const metrics = context.measureText(text);
+  console.log("measuring text", metrics);
+  canvas.remove();
+  return metrics.width;
+}
+
 const FILENAME = "BlueskyNotificationAnimation";
 const NOTIFICATION_DURATION = 300;
 
@@ -100,7 +119,7 @@ const BlueskyNotificationAnimation = (props: Props) => {
           notification.created = currentTime;
           notification.initialPosition = {
             x: p.random(-500, p.width - 200),
-            y: p.random(-500, p.height - 200),
+            y: p.random(-500, p.height + 50),
           };
           console.log(
             "spawning notification",
@@ -115,10 +134,18 @@ const BlueskyNotificationAnimation = (props: Props) => {
       notifications
         .filter((notification) => notification.active)
         .forEach((notification) => {
-          const textLength = notification.msg.length;
-          const containerWidth = textLength * 15;
-          const containerHeight = 40;
-          const containerPadding = 8;
+          const notificationDate = new Date(notification.time);
+          const niceTime = `${notificationDate.getHours()}:${notificationDate.getMinutes()}:${notificationDate.getSeconds()}`;
+
+          // const textLength = notification.msg.length;
+          // const containerWidth = textLength * 15;
+          const textLength = getTextWidth(
+            notification.msg,
+            "normal 26px Inter"
+          );
+          const containerWidth = textLength;
+          const containerHeight = 60;
+          const containerPadding = 12;
           const containerBorderRadius = 8;
 
           const x = notification.initialPosition.x;
@@ -131,7 +158,9 @@ const BlueskyNotificationAnimation = (props: Props) => {
 
           p.push();
           p.strokeWeight(0);
-          const fillColor = p.color(BASE_COLORS["gray-7"]);
+
+          // Container box
+          const fillColor = p.color(BASE_COLORS["gray-8"]);
           fillColor.setAlpha(animate * 255);
           p.fill(fillColor);
           p.rect(
@@ -144,15 +173,22 @@ const BlueskyNotificationAnimation = (props: Props) => {
             containerBorderRadius,
             containerBorderRadius
           );
+          // Message text
           const textColor = p.color(p.color(BASE_COLORS["gray-2"]));
           textColor.setAlpha(animate * 255);
           p.fill(textColor);
           p.textSize(20);
+          p.textFont("Inter");
           p.text(
             notification.msg,
             x + containerPadding,
             y + containerPadding + containerHeight / 2
           );
+          const subtitleColor = p.color(p.color(BASE_COLORS["gray-4"]));
+          subtitleColor.setAlpha(animate * 255);
+          p.fill(subtitleColor);
+          p.textSize(10);
+          p.text(niceTime, x + containerPadding, y + containerPadding + 10);
           p.pop();
         });
 
