@@ -85,7 +85,7 @@ export const useAppStore = create<AppState>()(
     setRelease: (release) => set(() => ({ release })),
     pitchShift: 2,
     setPitchShift: (pitchShift) => set(() => ({ pitchShift })),
-    synthType: "mixed",
+    synthType: "piano",
     setSynthType: (synthType) => set(() => ({ synthType })),
     waveform: null,
     setWaveform: (waveform) => set(() => ({ waveform })),
