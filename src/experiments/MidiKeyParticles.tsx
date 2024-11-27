@@ -79,7 +79,7 @@ const MidiKeyParticles = (props: Props) => {
       p.frameRate(60);
     };
     p.keyPressed = () => {
-      saveArt(p, FILENAME);
+      saveArt(p, FILENAME, "p");
     };
     p.draw = () => {
       time += p.deltaTime;
@@ -159,15 +159,17 @@ const MidiKeyParticles = (props: Props) => {
         p.stroke(strokeColor);
         p.fill(fillColor);
         const isBlackKey = note.note.includes("b");
-        p.rect(
-          isBlackKey
-            ? note.initialPosition.x + noteWidth / 4
-            : note.initialPosition.x,
-          y,
-          isBlackKey ? noteWidth / 2 : noteWidth,
-          NOTE_HEIGHT,
-          NOTE_BORDER_RADIUS
-        );
+        const containerX = isBlackKey
+          ? note.initialPosition.x + noteWidth / 4
+          : note.initialPosition.x;
+        const containerWidth = isBlackKey ? noteWidth / 2 : noteWidth;
+        p.rect(containerX, y, containerWidth, NOTE_HEIGHT, NOTE_BORDER_RADIUS);
+        p.strokeWeight(0);
+        const textColor = p.color(BASE_COLORS[`gray-1`]);
+        textColor.setAlpha(opacity * 255);
+        p.fill(textColor);
+        p.textSize(40);
+        p.text(note.note, containerX + containerWidth / 2 - 40, y + 40);
         p.pop();
       });
 
