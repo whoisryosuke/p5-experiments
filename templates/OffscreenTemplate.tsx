@@ -23,7 +23,7 @@ const ExampleComponent = (props: Props) => {
     };
     p.keyPressed = () => {
       // Pressing "s" on keyboard saves the offscreen texture (instead of the canvas)
-      saveOffscreenArt(offscreenTexture, FILENAME);
+      saveOffscreenArt(p, offscreenTexture, FILENAME);
     };
     p.draw = () => {
       // Set the background to white to see difference between offscreen texture
