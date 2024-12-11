@@ -7,9 +7,10 @@ import { BASE_COLORS } from "themes/colors/base";
 
 type Props = {};
 
-const FILENAME = "OffscreenGraphicsExample";
+const FILENAME = "ExampleComponent";
+const SIZE = 4096;
 
-const OffscreenGraphicsExample = (props: Props) => {
+const ExampleComponent = (props: Props) => {
   const Sketch = (p: p5) => {
     let drawn = false;
     let offscreenTexture: p5.Graphics;
@@ -18,7 +19,7 @@ const OffscreenGraphicsExample = (props: Props) => {
       p.createCanvas(window.innerWidth, window.innerHeight);
 
       // Create the offscreen texture and store it in a local variable
-      offscreenTexture = p.createGraphics(4096, 4096);
+      offscreenTexture = p.createGraphics(SIZE, SIZE);
     };
     p.keyPressed = () => {
       // Pressing "s" on keyboard saves the offscreen texture (instead of the canvas)
@@ -58,4 +59,4 @@ const OffscreenGraphicsExample = (props: Props) => {
   return <P5Sketch sketch={Sketch} />;
 };
 
-export default OffscreenGraphicsExample;
+export default ExampleComponent;

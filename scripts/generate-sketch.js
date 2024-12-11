@@ -1,6 +1,11 @@
 const { readFileSync, copyFileSync, writeFileSync } = require("fs");
 const path = require("path");
 
+const TEMPLATES = {
+  sketch: "SketchTemplate",
+  offscreen: "OffscreenTemplate",
+};
+
 function convertToSlug(componentName) {
   return (
     componentName
@@ -25,14 +30,17 @@ const generateSketch = async () => {
     );
 
   const sketchName = process.argv[2];
+  let template = process.argv[3];
+  if (!template) template = "sketch";
 
   console.log(`⚙️ Creating a new sketch called <${sketchName} />`);
 
   // Get template for component and copy it
+  const templateFilename = TEMPLATES[template];
   const componentTemplatePath = path.join(
     __dirname,
     "../templates",
-    "SketchTemplate.tsx"
+    `${templateFilename}.tsx`
   );
   const componentDestinationPath = path.join(
     __dirname,
