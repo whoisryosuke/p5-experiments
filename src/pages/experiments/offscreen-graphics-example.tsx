@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 
-const Design = dynamic(() => import("@/experiments/OffscreeGraphicsExample"), {
+const Design = dynamic(() => import("@/experiments/OffscreenGraphicsExample"), {
   ssr: false,
 });
 

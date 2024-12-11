@@ -7,9 +7,9 @@ import { BASE_COLORS } from "themes/colors/base";
 
 type Props = {};
 
-const FILENAME = "OffscreeGraphicsExample";
+const FILENAME = "OffscreenGraphicsExample";
 
-const OffscreeGraphicsExample = (props: Props) => {
+const OffscreenGraphicsExample = (props: Props) => {
   const Sketch = (p: p5) => {
     let drawn = false;
     let offscreenTexture: p5.Graphics;
@@ -62,4 +62,4 @@ const OffscreeGraphicsExample = (props: Props) => {
   return <P5Sketch sketch={Sketch} />;
 };
 
-export default OffscreeGraphicsExample;
+export default OffscreenGraphicsExample;
