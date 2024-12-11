@@ -23,7 +23,7 @@ const SIZE = 4096;
 // The block position determines when note was pressed
 const BLOCK_SIZE_WIDTH = 4;
 const BLOCK_SIZE_HEIGHT = 3;
-const BLOCK_SCALE = 20;
+const BLOCK_SCALE = 10;
 const KEY_POSITIONS: Record<Note, number> = {
   C4: 1,
   Cb4: 2,
@@ -37,6 +37,20 @@ const KEY_POSITIONS: Record<Note, number> = {
   A4: 10,
   Ab4: 11,
   B4: 12,
+};
+const KEY_COLORS: Record<Note, string> = {
+  C4: "red",
+  D4: "pink",
+  E4: "grape",
+  F4: "violet",
+  G4: "indigo",
+  A4: "blue",
+  B4: "cyan",
+  Cb4: "teal",
+  Db4: "green",
+  Fb4: "lime",
+  Gb4: "yellow",
+  Ab4: "orange",
 };
 
 const MidiPlaybackTexture = (props: Props) => {
@@ -59,7 +73,7 @@ const MidiPlaybackTexture = (props: Props) => {
       Gb4: false,
       Ab4: false,
     };
-    const notes: NoteState[] = [];
+    let notes: NoteState[] = [];
 
     const deleteNote = (id: string) => {
       const noteId = notes.findIndex((note) => note.id == id);
@@ -71,6 +85,7 @@ const MidiPlaybackTexture = (props: Props) => {
       const noteId = notes.findIndex((note) => note.id == id);
       if (noteId < 0) return;
       notes[noteId].drawn = true;
+      console.log("note drawn", id, noteId, notes[noteId].drawn);
     };
 
     p.setup = () => {
@@ -85,7 +100,7 @@ const MidiPlaybackTexture = (props: Props) => {
     };
     p.keyPressed = () => {
       // Pressing "s" on keyboard saves the offscreen texture (instead of the canvas)
-      saveOffscreenArt(offscreenTexture, FILENAME);
+      saveOffscreenArt(p, offscreenTexture, FILENAME, "p");
     };
     p.draw = () => {
       // Only increment time once user presses first MIDI key
@@ -112,14 +127,15 @@ const MidiPlaybackTexture = (props: Props) => {
               drawn: false,
             });
           }
-
-          localInput[noteKey] = notePressed;
         }
+        localInput[noteKey] = notePressed;
       });
 
+      notes = notes.filter((note) => !note.drawn);
+
       // Loop over notes
-      const drawNotes = notes.filter((note) => !note.drawn);
-      drawNotes.forEach((note) => {
+      notes.forEach((note) => {
+        if (note.drawn) return;
         // We calculate the total time distance
         // since this has to wrap around
         const blockSizeWidth = BLOCK_SIZE_WIDTH * BLOCK_SCALE;
@@ -132,6 +148,16 @@ const MidiPlaybackTexture = (props: Props) => {
         // To get vertical position we use the num times wrapped x the the size of a block
         const y = timeWrap * blockSizeHeight;
 
+        // const noteWidth = blockSizeWidth / 4;
+        // const noteHeight = blockSizeHeight / 3;
+        // const totalWidth = noteWidth * KEY_POSITIONS[note.note];
+        // const noteWrap = totalWidth / blockSizeWidth;
+        // const noteX = x + (totalWidth % noteWidth);
+        // const noteY = y + noteWrap * noteHeight;
+        // offscreenTexture.rect(noteX, noteY, noteWidth, noteHeight);
+
+        const fillColor = p.color(BASE_COLORS[`${KEY_COLORS[note.note]}-7`]);
+        offscreenTexture.fill(fillColor);
         offscreenTexture.rect(x, y, blockSizeWidth, blockSizeHeight);
 
         markNoteAsDrawn(note.id);
