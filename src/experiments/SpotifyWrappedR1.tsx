@@ -17,12 +17,16 @@ const SpotifyWrappedR1 = (props: Props) => {
     let time = 0;
     let lastTime = 0;
     let offscreenTexture: p5.Graphics;
+    let width = 100;
+    let height = 100;
     p.setup = () => {
       console.log("setup canvas");
       p.createCanvas(window.innerWidth, window.innerHeight);
 
       // Create the offscreen texture and store it in a local variable
-      offscreenTexture = p.createGraphics(p.width, p.height);
+      width = p.width;
+      height = p.height;
+      offscreenTexture = p.createGraphics(width, height);
     };
     p.keyPressed = () => {
       // Pressing "s" on keyboard saves the offscreen texture (instead of the canvas)
@@ -35,7 +39,7 @@ const SpotifyWrappedR1 = (props: Props) => {
 
       time += p.deltaTime;
       const timeCheck = time - lastTime;
-      const SPEED = 100;
+      const SPEED = 200;
       const shouldTickAnimation = Math.round(timeCheck) > SPEED;
 
       if (shouldTickAnimation) {
@@ -51,29 +55,25 @@ const SpotifyWrappedR1 = (props: Props) => {
 
         const animationSpeed = 2000; // Bigger = slower
         const animation = p.sin(time / animationSpeed);
-        const initialDiameter = p.height * 2;
-        const diameterOffset = index * 100;
+        const initialDiameter = height * 2;
+        const diameterOffset = index * (animation + 1.5) * 100;
         const diameterAnimation = animation * 1000;
 
         const initialStrokeWeight = 30;
-        const strokeAnimation = animation * 50;
+        const strokeAnimation = (animation + 1) * 50;
         offscreenTexture.push();
         offscreenTexture.noFill();
         offscreenTexture.stroke(p.color(BASE_COLORS[`blue-${colorIndex}`]));
         offscreenTexture.strokeWeight(initialStrokeWeight + strokeAnimation);
         offscreenTexture.circle(
           0,
-          p.height,
+          height,
           initialDiameter + diameterOffset + diameterAnimation
         );
         offscreenTexture.pop();
       });
 
-      // We display the texture for the user to preview
-      // Since I'm doing images with a square ratio (1:1 width and height)
-      // We do the shortest edge so we can get a proper square
-      const shortestEdge = Math.min(p.width, p.height);
-      p.image(offscreenTexture, 0, 0, p.width, p.height);
+      p.image(offscreenTexture, 0, 0, width, height);
     };
   };
 
