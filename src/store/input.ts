@@ -134,7 +134,7 @@ export const useInputStore = create<InputState>()((set) => ({
   // Game settings
   appInput: DEFAULT_USER_MAP,
   setAppInput: (key, input) =>
-    set((state) => ({ appInput: { ...state.input, [key]: input } })),
+    set((state) => ({ appInput: { ...state.appInput, [key]: input } })),
   setMultiAppInput: (keys) =>
-    set((state) => ({ input: { ...state.input, ...keys } })),
+    set((state) => ({ appInput: { ...state.appInput, ...keys } })),
 }));
