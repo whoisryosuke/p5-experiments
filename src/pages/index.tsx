@@ -8,7 +8,8 @@ export default function Page() {
     <>
       <div style={{ padding: "3rem" }}>
         <h1>Experiments</h1>
-        <KeyboardUI />
+        <KeyboardUI type="app" style={{ width: "100%" }} />
+        <KeyboardUI type="user" />
       </div>
     </>
   );

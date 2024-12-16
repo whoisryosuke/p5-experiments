@@ -16,17 +16,25 @@ export const NOTE_LETTERS: Partial<WhiteNotes>[] = [
 ];
 export const NOTE_LETTERS_WITH_BLACK: BaseNote[] = [
   "C",
-  "C#",
+  "Cb",
   "D",
-  "D#",
+  "Db",
   "E",
   "F",
-  "F#",
+  "Fb",
   "G",
-  "G#",
+  "Gb",
   "A",
-  "A#",
+  "Ab",
   "B",
+];
+
+export const NOTE_LETTERS_BLACK: Partial<BaseNote>[] = [
+  "Cb",
+  "Db",
+  "Fb",
+  "Gb",
+  "Ab",
 ];
 
 // Styling

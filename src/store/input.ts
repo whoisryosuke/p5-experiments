@@ -111,6 +111,10 @@ interface InputState {
   setCurrentDevice: (currentDevice: string) => void;
   deviceName: string;
   setDeviceName: (deviceName: string) => void;
+
+  appInput: UserInputMap;
+  setAppInput: (key: UserInputKeys, input: boolean) => void;
+  setMultiAppInput: (keys: Partial<UserInputMap>) => void;
 }
 
 export const useInputStore = create<InputState>()((set) => ({
@@ -126,4 +130,11 @@ export const useInputStore = create<InputState>()((set) => ({
   setCurrentDevice: (currentDevice) => set(() => ({ currentDevice })),
   deviceName: "Keyboard",
   setDeviceName: (deviceName) => set(() => ({ deviceName })),
+
+  // Game settings
+  appInput: DEFAULT_USER_MAP,
+  setAppInput: (key, input) =>
+    set((state) => ({ appInput: { ...state.input, [key]: input } })),
+  setMultiAppInput: (keys) =>
+    set((state) => ({ input: { ...state.input, ...keys } })),
 }));

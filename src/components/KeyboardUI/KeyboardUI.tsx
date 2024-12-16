@@ -1,14 +1,19 @@
 import React from "react";
-import KeyboardKeyWhite from "./KeyboardKeyWhite";
+import KeyboardKeyWhiteUser from "./KeyboardKeyWhiteUser";
+import KeyboardKeyWhiteApp from "./KeyboardKeyWhiteApp";
 import { generateKeysByOctave } from "../../helpers/music-keyboard";
 import KeyboardKeyBlackSet from "./KeyboardKeyBlackSet";
 
-type Props = {};
+type Props = {
+  type: "user" | "app";
+};
 
-const KeyboardUI = (props: Props) => {
+const KeyboardUI = ({ type, ...props }: Props) => {
   const keys = generateKeysByOctave();
   const octaves = Object.keys(keys);
   console.log("baseNotes", octaves);
+  const KeyComponent =
+    type == "user" ? KeyboardKeyWhiteUser : KeyboardKeyWhiteApp;
   return (
     <div
       style={{
@@ -20,15 +25,26 @@ const KeyboardUI = (props: Props) => {
         borderRadius: 8,
         overflow: "hidden",
       }}
+      {...props}
     >
-      <div style={{ display: "flex", width: "100%" }}>
+      <div
+        style={{
+          display: "flex",
+          width: "100%",
+          borderLeftWidth: 0,
+          borderTopWidth: 0,
+          borderBottomWidth: 0,
+          borderRightWidth: "2px",
+          borderStyle: "solid",
+          borderColor: "rgba(200, 200, 200, 0.5)",
+        }}
+      >
         {octaves.map((octave) => {
           return (
-            <div key={octave} style={{ position: "relative", width: "100%" }}>
-              <KeyboardKeyBlackSet octave={Number(octave)} />
+            <div key={octave} style={{ position: "relative", flex: 1 }}>
               <div style={{ display: "flex" }}>
                 {keys[octave].map((note) => (
-                  <KeyboardKeyWhite key={note} label={note} />
+                  <KeyComponent key={note} label={note} octave={octave} />
                 ))}
               </div>
             </div>

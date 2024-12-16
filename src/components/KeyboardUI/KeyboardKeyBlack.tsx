@@ -10,29 +10,38 @@ type StyledKeyboardKeyWhiteProps = PropsWithChildren<{
   pressed: boolean;
 }>;
 
-const StyledKeyboardKeyBlack = styled.div<StyledKeyboardKeyWhiteProps>(
-  {
-    width: "50%",
-    height: 50,
-    backgroundColor: "rgba(0,0,0,0.75)",
-    textAlign: "center",
-    position: "absolute",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "flex-end",
-    borderBottomLeftRadius: "2px",
-    borderBottomRightRadius: "2px",
-  },
-  (props) =>
-    props.pressed && {
-      backgroundColor: "rgba(0,55,255,0.5)",
-    }
-);
+const StyledKeyboardKeyBlack = styled.div<StyledKeyboardKeyWhiteProps>`
+  width: 50%;
+  height: 50px;
+  background-color: rgba(0, 0, 0, 1);
+  text-align: center;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+  right: -25%;
+  top: 0;
+  z-index: 420;
 
-const KeyboardKeyBlackLabel = styled.span({
-  fontSize: "0.5em",
-  color: "rgba(255,255,255,0.5)",
-});
+  &:hover {
+    background-color: rgba(0, 0, 100, 1);
+  }
+
+  ${(props) =>
+    props.pressed &&
+    `
+      background-color: rgba(0,55,255,0.5);
+  `}
+`;
+
+const KeyboardKeyBlackLabel = styled.span`
+  font-size: 0.5em;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+`;
 
 type Props = {
   label: Note;
