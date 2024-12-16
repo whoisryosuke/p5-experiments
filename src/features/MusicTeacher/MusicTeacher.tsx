@@ -4,6 +4,7 @@ import { GeneratorConfig, TeoriaNote } from "./types";
 import teoria from "teoria";
 import { Chord, Note } from "tonal";
 import { CHORD_SYMBOLS, CHORD_TYPES } from "./data/chord-symbols";
+import { NOTE_LETTERS } from "@/helpers/constants";
 
 type Props = {};
 
@@ -48,7 +49,11 @@ const MusicTeacher = (props: Props) => {
 
     const randomType =
       CHORD_TYPES[Math.round(Math.random() * CHORD_TYPES.length)];
-    const chord = Chord.getChord(randomType, "C", "B");
+    const randomNoteTonic =
+      NOTE_LETTERS[Math.round(Math.random() * NOTE_LETTERS.length)];
+    const randomNoteBass =
+      NOTE_LETTERS[Math.round(Math.random() * NOTE_LETTERS.length)];
+    const chord = Chord.getChord(randomType, randomNoteTonic, randomNoteBass);
     // const notes = Chord.notes("maj7", "C4");
     console.log("tonal chord", chord.name, chord.notes);
 
