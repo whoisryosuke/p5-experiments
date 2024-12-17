@@ -60,23 +60,35 @@ const ControlledLoopR2 = (props: Props) => {
       // Create the offscreen texture and store it in a local variable
       texture = p.createGraphics(WIDTH, HEIGHT);
 
+      // We create an animation to control
       animationControls = animate(
         animation,
         { x: 100, y: 100 },
         {
-          duration: 0.5,
-          repeat: Infinity,
+          // This is important, make sure it's turned off
           autoplay: false,
+
+          // Everything else is up to you!
+          // Duration of animation
+          duration: 0.5,
+          // Loops infinitely
+          repeat: Infinity,
+          // Makes it go back and forth (without creating a sequence yourself)
           repeatType: "mirror",
         }
       );
 
+      // Where all the actual drawing happens.
+      // This function basically keeps "looping" until we reach video duration (set above)
       const draw = () => {
         const time = frameNumber / 60;
         // We manually progress the animation by setting the time based on the frame counter
         animationControls.time = time;
 
+        // We manually loop here
         p.loop();
+
+        // Draw whatever you want!
         texture.background(p.color(BASE_COLORS["gray-9"])); // Set the background to black
         texture.strokeWeight(3);
         texture.stroke(p.color(BASE_COLORS["gray-5"]));
@@ -86,6 +98,8 @@ const ControlledLoopR2 = (props: Props) => {
         const startX = WIDTH / 2 + animation.x;
         const startY = HEIGHT / 2 + animation.y;
         drawCircle(texture, radius, resolution, startX, startY);
+
+        // We stop loop here after drawing
         p.noLoop();
 
         // Save the canvas with frame number to compile for videos
@@ -93,10 +107,12 @@ const ControlledLoopR2 = (props: Props) => {
           if (SAVE_ENABLED) texture.save(`${FILENAME}-${frameNumber}`);
 
           frameNumber += 1;
+          // We queue up another frame to render after this
           setTimeout(draw, TIME_BETWEEN_FRAMES);
         }
       };
 
+      // Start the drawing the first frame
       setTimeout(draw, TIME_BETWEEN_FRAMES);
     };
     p.keyPressed = () => {};
