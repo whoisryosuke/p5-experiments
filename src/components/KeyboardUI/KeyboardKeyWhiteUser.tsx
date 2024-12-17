@@ -5,8 +5,9 @@ import {
   KEYBOARD_WHITE_KEY_WIDTH,
   NOTE_LETTERS_BLACK,
 } from "../../helpers/constants";
-import KeyboardKeyBlack from "./KeyboardKeyBlack";
+import KeyboardKeyBlackUser from "./KeyboardKeyBlackUser";
 import {
+  KeyboardKeyTypes,
   KeyboardKeyWhiteLabel,
   StyledKeyboardKeyContainer,
   StyledKeyboardKeyWhite,
@@ -15,11 +16,13 @@ import {
 type Props = {
   label: Note;
   octave: number;
+  type: KeyboardKeyTypes;
 };
 
-const KeyboardKeyWhite = ({ label, octave, ...props }: Props) => {
-  const { input } = useInputStore();
+const KeyboardKeyWhite = ({ label, octave, type, ...props }: Props) => {
+  const { input, appInput } = useInputStore();
   const isPressed = input[label];
+  const shouldPress = appInput[label];
   const noteLetter = label.charAt(0);
 
   // We also render a black key if needed
@@ -30,9 +33,9 @@ const KeyboardKeyWhite = ({ label, octave, ...props }: Props) => {
   return (
     <StyledKeyboardKeyContainer {...props}>
       {showBlackKey && (
-        <KeyboardKeyBlack label={`${showBlackKey}${octave}` as Note} />
+        <KeyboardKeyBlackUser label={`${showBlackKey}${octave}` as Note} />
       )}
-      <StyledKeyboardKeyWhite pressed={isPressed}>
+      <StyledKeyboardKeyWhite pressed={isPressed} highlight={shouldPress}>
         {label && <KeyboardKeyWhiteLabel>{label}</KeyboardKeyWhiteLabel>}
       </StyledKeyboardKeyWhite>
     </StyledKeyboardKeyContainer>

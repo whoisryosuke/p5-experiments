@@ -3,9 +3,10 @@ import KeyboardKeyWhiteUser from "./KeyboardKeyWhiteUser";
 import KeyboardKeyWhiteApp from "./KeyboardKeyWhiteApp";
 import { generateKeysByOctave } from "../../helpers/music-keyboard";
 import KeyboardKeyBlackSet from "./KeyboardKeyBlackSet";
+import { KeyboardKeyTypes } from "./KeyboardKeyStyled";
 
 type Props = {
-  type: "user" | "app";
+  type: KeyboardKeyTypes;
 };
 
 const KeyboardUI = ({ type, ...props }: Props) => {
@@ -44,7 +45,12 @@ const KeyboardUI = ({ type, ...props }: Props) => {
             <div key={octave} style={{ position: "relative", flex: 1 }}>
               <div style={{ display: "flex" }}>
                 {keys[octave].map((note) => (
-                  <KeyComponent key={note} label={note} octave={octave} />
+                  <KeyComponent
+                    key={note}
+                    label={note}
+                    octave={parseInt(octave) + 1}
+                    type={type}
+                  />
                 ))}
               </div>
             </div>

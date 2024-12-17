@@ -5,7 +5,7 @@ import {
   KEYBOARD_WHITE_KEY_WIDTH,
   NOTE_LETTERS_BLACK,
 } from "../../helpers/constants";
-import KeyboardKeyBlack from "./KeyboardKeyBlack";
+import KeyboardKeyBlack from "./KeyboardKeyBlackApp";
 import {
   KeyboardKeyWhiteLabel,
   StyledKeyboardKeyContainer,

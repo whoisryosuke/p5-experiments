@@ -29,3 +29,9 @@ export type GeneratorConfig = {
   type: GeneratorTypes;
   scale: TeoriaScales;
 };
+
+export type ChordHistory = {
+  name: string;
+  notes: string[];
+  octave: number;
+};
