@@ -12,7 +12,7 @@ const AppWrapper = ({ children }: PropsWithChildren<Props>) => {
       <Keyboard />
       <MidiKeyboard />
       <Gamepad />
-      {/* <MusicSwitcher /> */}
+      <MusicSwitcher />
       {children}
     </>
   );
