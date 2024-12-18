@@ -1,8 +1,13 @@
 import P5Sketch from "@/components/P5Sketch";
 import { drawCircle } from "@/helpers/drawing/drawCircle";
-import { drawPiano } from "@/helpers/drawing/piano";
+import {
+  drawPiano,
+  NOTE_LETTERS_WITH_BLACK,
+  PianoState,
+} from "@/helpers/drawing/piano";
 import { saveArt } from "@/helpers/drawing/saveArt";
-import { animate } from "motion";
+import { BaseNote } from "@/store/input";
+import { animate, AnimationSequence } from "motion";
 import p5 from "p5";
 import React from "react";
 import { BASE_COLORS } from "themes/colors/base";
@@ -29,10 +34,6 @@ const FPS = 60;
  */
 const TIME_BETWEEN_FRAMES = 100;
 /**
- * ⏱️ Total duration of animation/video. Time in seconds.
- */
-const RENDER_DURATION = 1;
-/**
  * ⏯️ Enables or disables rendering frame by frame
  */
 const RENDER_ENABLED = true;
@@ -40,6 +41,26 @@ const RENDER_ENABLED = true;
  * 💽 Enables or disables saving image sequence
  */
 const SAVE_ENABLED = false;
+
+const NOTE_DURATION = 1000; // ms
+const NOTES_TO_PLAY = [
+  {
+    note: "C",
+    duration: NOTE_DURATION,
+  },
+  {
+    note: "D",
+    duration: NOTE_DURATION,
+  },
+  {
+    note: "E",
+    duration: NOTE_DURATION,
+  },
+];
+/**
+ * ⏱️ Total duration of animation/video. Time in seconds.
+ */
+const RENDER_DURATION = (NOTES_TO_PLAY.length * NOTE_DURATION) / 1000;
 
 type Props = {};
 const PianoVisualization = (props: Props) => {
@@ -51,7 +72,60 @@ const PianoVisualization = (props: Props) => {
       x: 0,
       y: 0,
     };
-    let animationControls: ReturnType<typeof animate>;
+    let animationControls: Record<BaseNote, ReturnType<typeof animate>> = {
+      C: undefined,
+      D: undefined,
+      E: undefined,
+      F: undefined,
+      G: undefined,
+      A: undefined,
+      B: undefined,
+      Cb: undefined,
+      Db: undefined,
+      Fb: undefined,
+      Gb: undefined,
+      Ab: undefined,
+    };
+    const noteState: Record<BaseNote, PianoState> = {
+      C: {
+        pressed: 0,
+      },
+      D: {
+        pressed: 0,
+      },
+      E: {
+        pressed: 0,
+      },
+      F: {
+        pressed: 0,
+      },
+      G: {
+        pressed: 0,
+      },
+      A: {
+        pressed: 0,
+      },
+      B: {
+        pressed: 0,
+      },
+      Cb: {
+        pressed: 0,
+      },
+      Db: {
+        pressed: 0,
+      },
+      Fb: {
+        pressed: 0,
+      },
+      Gb: {
+        pressed: 0,
+      },
+      Ab: {
+        pressed: 0,
+      },
+    };
+    let playNoteIndex = 0;
+    let playNoteLastTime = 0;
 
     p.setup = () => {
       console.log("setup canvas");
@@ -62,29 +136,54 @@ const PianoVisualization = (props: Props) => {
       texture = p.createGraphics(WIDTH, HEIGHT);
 
       // We create an animation to control
-      animationControls = animate(
-        animation,
-        { x: 100, y: 100 },
-        {
-          // This is important, make sure it's turned off
-          autoplay: false,
-
-          // Everything else is up to you!
-          // Duration of animation
-          duration: 0.5,
-          // Loops infinitely
-          repeat: Infinity,
-          // Makes it go back and forth (without creating a sequence yourself)
-          repeatType: "mirror",
-        }
-      );
+      NOTE_LETTERS_WITH_BLACK.forEach((noteLetter) => {
+        const sequence: AnimationSequence = [
+          [
+            noteState[noteLetter],
+            { pressed: 1 },
+            { duration: NOTE_DURATION / 2 / 1000, autoplay: false },
+          ],
+          [
+            noteState[noteLetter],
+            { pressed: 0 },
+            { duration: NOTE_DURATION / 2 / 1000, autoplay: false },
+          ],
+        ];
+        animationControls[noteLetter] = animate(sequence);
+        animationControls[noteLetter].pause();
+      });
 
       // Where all the actual drawing happens.
       // This function basically keeps "looping" until we reach video duration (set above)
       const draw = () => {
         const time = frameNumber / 60;
         // We manually progress the animation by setting the time based on the frame counter
-        animationControls.time = time;
+
+        // Check for presses
+        const currentPlayNote = NOTES_TO_PLAY[playNoteIndex];
+        const timeInMs = time * 1000;
+        const measureTimeDifference = timeInMs - playNoteLastTime;
+
+        // Play animation
+        if (measureTimeDifference <= currentPlayNote.duration) {
+          console.log(
+            "playing animation",
+            currentPlayNote.note,
+            measureTimeDifference / 1000
+          );
+          animationControls[currentPlayNote.note].time =
+            measureTimeDifference / 1000;
+        }
+
+        // Play next note
+        if (measureTimeDifference > currentPlayNote.duration) {
+          const nextIndex = playNoteIndex + 1;
+          if (nextIndex <= NOTES_TO_PLAY.length - 1) {
+            playNoteIndex = nextIndex;
+            playNoteLastTime = timeInMs;
+            console.log("playing next note - last note:", currentPlayNote.note);
+          }
+        }
 
         // We manually loop here
         p.loop();
@@ -96,7 +195,7 @@ const PianoVisualization = (props: Props) => {
         const pianoWidth = WIDTH - padding * 2;
         const pianoHeight = HEIGHT / 6;
         const pianoY = HEIGHT / 2 - pianoHeight / 2;
-        drawPiano(texture, padding, pianoY, pianoWidth, pianoHeight);
+        drawPiano(texture, padding, pianoY, pianoWidth, pianoHeight, noteState);
 
         // We stop loop here after drawing
         p.noLoop();
@@ -112,11 +211,11 @@ const PianoVisualization = (props: Props) => {
       };
 
       // Start the drawing the first frame
-      setTimeout(draw, TIME_BETWEEN_FRAMES);
+      draw();
     };
     p.keyPressed = () => {};
     p.draw = () => {
-      console.log("animation", animation);
+      console.log("animation", noteState.C, noteState.D);
       // We assume the user's screen is wider than taller, and scale based off that
       // This is a proportional calculation between the screen size and the size we need
       // 3840 / 2160 = p.width / imageHeight

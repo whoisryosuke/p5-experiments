@@ -43,31 +43,37 @@ export const NOTE_LETTERS_BLACK: Partial<BaseNote>[] = [
 export const KEYBOARD_WHITE_KEY_WIDTH = 20;
 export const KEYBOARD_BLACK_KEY_WIDTH = KEYBOARD_WHITE_KEY_WIDTH / 2;
 
+export type PianoState = {
+  /**
+   * 0 to 1. 0 = Not pressed.
+   */
+  pressed: number;
+};
+
 export function drawPiano(
   texture: Graphics,
   startX: number,
   startY: number,
   pianoWidth: number,
-  pianoHeight: number
+  pianoHeight: number,
+  noteState: Record<BaseNote, PianoState>
 ) {
+  const borderWidth = 32;
+  const borderWidthAll = [borderWidth, borderWidth, borderWidth, borderWidth];
   const noteWidth = pianoWidth / NOTE_LETTERS.length;
   NOTE_LETTERS.forEach((whiteNote, noteIndex) => {
     const x = startX + noteIndex * noteWidth;
     const y = startY;
+    const state = noteState[whiteNote];
 
     // White key
-    // Background that highlights when pressed
-    texture.noStroke();
-    const backgroundColor = texture.color(BASE_COLORS["blue-9"]);
-    backgroundColor.setAlpha(0);
-    texture.fill(backgroundColor);
-    texture.rect(x, y, noteWidth, pianoHeight);
-
-    // Draw the outline
+    // Draw the outline and fill
     texture.strokeWeight(3);
-    texture.noFill();
+    const backgroundColor = texture.color(BASE_COLORS["blue-9"]);
+    backgroundColor.setAlpha(state.pressed * 255);
+    texture.fill(backgroundColor);
     texture.stroke(texture.color(BASE_COLORS["gray-3"]));
-    texture.rect(x, y, noteWidth, pianoHeight);
+    texture.rect(x, y, noteWidth, pianoHeight, ...borderWidthAll);
 
     // Text
     texture.noStroke();
@@ -95,7 +101,8 @@ export function drawPiano(
         x + noteWidth / 2 + noteWidth / 4,
         y,
         noteWidth / 2,
-        (pianoHeight / 3) * 2
+        (pianoHeight / 3) * 2,
+        ...borderWidthAll
       );
     }
   });
