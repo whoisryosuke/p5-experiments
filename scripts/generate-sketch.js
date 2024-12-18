@@ -4,6 +4,7 @@ const path = require("path");
 const TEMPLATES = {
   sketch: "SketchTemplate",
   offscreen: "OffscreenTemplate",
+  "render-video": "RenderImageSequenceTemplate",
 };
 
 function convertToSlug(componentName) {
