@@ -51,8 +51,6 @@ export function drawOscillatorLineAnimated(
   const start = Math.round(mapRange(progress, 0, 1, 0, samples - visibleCount));
   const end = Math.round(Math.min(start + visibleCount, samples));
 
-  console.log("render waveform", start, end);
-
   for (let i = start; i < end; i++) {
     const normalized = filteredData[i] * 10;
     const prevNormalized = filteredData[i - 1] * 10;
@@ -68,11 +66,6 @@ export function drawOscillatorLineAnimated(
 
     const x = mapRange(i, start, end, 0, p.width);
     const y = mapRange(normalized, -1, 1, p.height / 4, (p.height / 4) * 3);
-
-    if (i == start) {
-      console.log("waveform", normalized, prevNormalized);
-      console.log("line", prevX, prevY, x, y);
-    }
 
     p.line(prevX, prevY, x, y);
   }

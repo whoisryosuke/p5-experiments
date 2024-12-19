@@ -33,10 +33,6 @@ const FPS = 60;
  */
 const TIME_BETWEEN_FRAMES = 100;
 /**
- * ⏱️ Total duration of animation/video. Time in seconds.
- */
-const RENDER_DURATION = 1;
-/**
  * 💽 Enables or disables saving image sequence
  */
 const SAVE_ENABLED = false;
@@ -63,8 +59,7 @@ const WaveformVideo = (props: Props) => {
     let frameNumber = 0;
     let texture: p5.Graphics;
     let animation = {
-      x: 0,
-      y: 0,
+      progress: 0,
     };
     let animationControls: ReturnType<typeof animate>;
     let audioBuffer: AudioBuffer;
@@ -74,6 +69,10 @@ const WaveformVideo = (props: Props) => {
      * ⏯️ Enables or disables rendering frame by frame
      */
     let renderEnabled = false;
+    /**
+     * ⏱️ Total duration of animation/video. Time in seconds.
+     */
+    let renderDuration = 1;
 
     p.setup = () => {
       console.log("setup canvas");
@@ -90,66 +89,70 @@ const WaveformVideo = (props: Props) => {
 
         // Generate waveform data
         waveformData = audioBuffer.getChannelData(0);
-        console.log("waveform data", waveformData);
+
+        // Grab duration
+        renderDuration = audioBuffer.duration;
 
         // Since we have to wait for audio to load
         // We have flags here to start rendering
         audioLoaded = true;
         renderEnabled = true;
+
+        // We create an animation to control
+        animationControls = animate(
+          animation,
+          { progress: 1 },
+          {
+            // This is important, make sure it's turned off
+            autoplay: false,
+
+            // Everything else is up to you!
+            // Duration of animation
+            duration: renderDuration,
+            // Loops infinitely
+            repeat: Infinity,
+            // Makes it go back and forth (without creating a sequence yourself)
+            repeatType: "mirror",
+          }
+        );
+        animationControls.pause();
       });
-
-      // We create an animation to control
-      animationControls = animate(
-        animation,
-        { x: 100, y: 100 },
-        {
-          // This is important, make sure it's turned off
-          autoplay: false,
-
-          // Everything else is up to you!
-          // Duration of animation
-          duration: 0.5,
-          // Loops infinitely
-          repeat: Infinity,
-          // Makes it go back and forth (without creating a sequence yourself)
-          repeatType: "mirror",
-        }
-      );
 
       // Where all the actual drawing happens.
       // This function basically keeps "looping" until we reach video duration (set above)
       const draw = () => {
         const time = frameNumber / 60;
-        // We manually progress the animation by setting the time based on the frame counter
-        animationControls.time = time;
+        if (renderEnabled && time <= renderDuration) {
+          animationControls.time = time;
+          // We manually loop here
+          p.loop();
 
-        // We manually loop here
-        p.loop();
+          // Draw whatever you want!
+          texture.background(p.color(BASE_COLORS["gray-9"])); // Set the background to black
+          // BG Lines
+          createGridBoxes(texture, 60);
 
-        // Draw whatever you want!
-        texture.background(p.color(BASE_COLORS["gray-9"])); // Set the background to black
-        // BG Lines
-        createGridBoxes(texture, 60);
+          drawOscillatorLineAnimated(
+            texture,
+            waveformData,
+            "blue",
+            // Math.min(time / renderDuration, 1), // Using internal time
+            Math.min(animation.progress, 1), // Use spring based time
+            1024 / 10
+          );
 
-        drawOscillatorLineAnimated(
-          texture,
-          waveformData,
-          "blue",
-          Math.min(time / RENDER_DURATION, 1),
-          1024 / 10
-        );
-
-        // We stop loop here after drawing
-        p.noLoop();
+          // We stop loop here after drawing
+          p.noLoop();
+        }
 
         // Save the canvas with frame number to compile for videos
-        if (renderEnabled && time <= RENDER_DURATION) {
+        if (renderEnabled && time <= renderDuration) {
           if (SAVE_ENABLED) texture.save(`${FILENAME}-${frameNumber}`);
 
           frameNumber += 1;
           // We queue up another frame to render after this
-          setTimeout(draw, TIME_BETWEEN_FRAMES);
         }
+        setTimeout(draw, TIME_BETWEEN_FRAMES);
       };
 
       // Start the drawing the first frame
@@ -189,7 +192,7 @@ const WaveformVideo = (props: Props) => {
       p.fill(p.color(BASE_COLORS["blue-3"]));
       const progressTotalWidth = 300;
       // We use `min` here to limit it by the total duration (cause sometimes it spills over a little)
-      const progress = Math.min(time / RENDER_DURATION, 1);
+      const progress = Math.min(time / renderDuration, 1);
       const progressWidth = progress * progressTotalWidth;
       p.rect(36, 96, progressWidth, 30);
       // Then render a "blank" full size one
