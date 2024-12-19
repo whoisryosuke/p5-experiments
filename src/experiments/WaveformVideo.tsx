@@ -2,6 +2,7 @@ import P5Sketch from "@/components/P5Sketch";
 import { drawOscillatorLineAnimated } from "@/helpers/drawing/audio";
 import {
   createGridBoxes,
+  createGridBoxesAnimated,
   createGridLines,
 } from "@/helpers/drawing/createGridLines";
 import { drawCircle } from "@/helpers/drawing/drawCircle";
@@ -35,7 +36,8 @@ const TIME_BETWEEN_FRAMES = 100;
 /**
  * 💽 Enables or disables saving image sequence
  */
-const SAVE_ENABLED = false;
+const SAVE_ENABLED = true;
+const DURATION_SPEED = 1;
 
 const MUSIC_FILE = "/samples/mixed/C4.mp3";
 
@@ -73,6 +75,8 @@ const WaveformVideo = (props: Props) => {
      * ⏱️ Total duration of animation/video. Time in seconds.
      */
     let renderDuration = 1;
+    let animatedLines = [];
+    let lastTime = 0;
 
     p.setup = () => {
       console.log("setup canvas");
@@ -91,7 +95,7 @@ const WaveformVideo = (props: Props) => {
         waveformData = audioBuffer.getChannelData(0);
 
         // Grab duration
-        renderDuration = audioBuffer.duration;
+        renderDuration = audioBuffer.duration * DURATION_SPEED;
 
         // Since we have to wait for audio to load
         // We have flags here to start rendering
@@ -131,6 +135,8 @@ const WaveformVideo = (props: Props) => {
           texture.background(p.color(BASE_COLORS["gray-9"])); // Set the background to black
           // BG Lines
           createGridBoxes(texture, 60);
+          const timeDelta = time - lastTime;
+          // createGridBoxesAnimated(texture, 60, animatedLines, timeDelta, 100);
 
           drawOscillatorLineAnimated(
             texture,
@@ -150,6 +156,7 @@ const WaveformVideo = (props: Props) => {
           if (SAVE_ENABLED) texture.save(`${FILENAME}-${frameNumber}`);
 
           frameNumber += 1;
+          lastTime = time;
           // We queue up another frame to render after this
         }
         setTimeout(draw, TIME_BETWEEN_FRAMES);

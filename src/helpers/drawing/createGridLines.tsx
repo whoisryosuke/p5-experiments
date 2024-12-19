@@ -33,7 +33,8 @@ export const createGridBoxesAnimated = (
   p: p5,
   lineNumber: number,
   animatedLines: number[],
-  timeDelta: number
+  timeDelta: number,
+  speed: number = 2000
 ) => {
   p.strokeWeight(0.5);
   p.stroke(p.color(BASE_COLORS["gray-8"]));
@@ -41,10 +42,38 @@ export const createGridBoxesAnimated = (
   // Spawn the intial grid lines
   const horizontalLineNum = lineNumber + 10;
   if (animatedLines.length == 0) {
+    console.log("Spawning initial lines");
     for (let x = 0; x < horizontalLineNum; x++) {
       const newX = p.map(x, 0, lineNumber, 0, p.width);
       animatedLines.push(newX);
     }
+  }
+
+  // Spawn new lines?
+  if (animatedLines.length < horizontalLineNum) {
+    const prevLine = animatedLines[animatedLines.length - 2];
+    const lastLine = animatedLines[animatedLines.length - 1];
+    const distance = lastLine - prevLine;
+
+    const numNewLines = horizontalLineNum - animatedLines.length;
+    console.log("Spawning lines", numNewLines, prevLine, lastLine, distance);
+
+    let lastNewLine = lastLine;
+    for (let x = 0; x <= numNewLines; x++) {
+      const baseX = distance + lastNewLine;
+      animatedLines.push(baseX);
+
+      lastNewLine = baseX;
+    }
+  }
+
+  // Animate the lines
+  for (let lineIndex = 0; lineIndex < animatedLines.length; lineIndex++) {
+    const offset = timeDelta * speed;
+    animatedLines[lineIndex] -= offset;
+
+    // Draw the lines
+    p.line(animatedLines[lineIndex], 0, animatedLines[lineIndex], p.height);
   }
 
   // Destroy lines that go past threshold
@@ -55,15 +84,6 @@ export const createGridBoxesAnimated = (
     })
     .filter((line) => line !== false);
   destroyItems.forEach((lineIndex) => animatedLines.splice(lineIndex, 1));
-
-  // Animate the lines
-  for (let lineIndex = 0; lineIndex < animatedLines.length; lineIndex++) {
-    const offset = timeDelta * 0.1;
-    animatedLines[lineIndex] -= offset;
-
-    // Draw the lines
-    p.line(animatedLines[lineIndex], 0, animatedLines[lineIndex], p.height);
-  }
 
   // Draw the static vertical lines
   for (let y = 0; y < lineNumber; y++) {
