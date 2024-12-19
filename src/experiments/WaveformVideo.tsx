@@ -36,7 +36,7 @@ const TIME_BETWEEN_FRAMES = 100;
 /**
  * 💽 Enables or disables saving image sequence
  */
-const SAVE_ENABLED = true;
+const SAVE_ENABLED = false;
 const DURATION_SPEED = 1;
 
 const MUSIC_FILE = "/samples/mixed/C4.mp3";
