@@ -1,3 +1,15 @@
+export const OUT_OF_RANGE_SHARP_NOTES_CONVERSION = {
+  Db: "Cb",
+  Eb: "Db",
+  Gb: "Fb",
+  Ab: "Gb",
+  Bb: "Ab",
+};
+
+export const OUT_OF_RANGE_SHARP_NOTES = Object.keys(
+  OUT_OF_RANGE_SHARP_NOTES_CONVERSION
+);
+
 // @see: https://en.wikipedia.org/wiki/Chord_(music)#Examples
 export const CHORD_TYPES = [
   "maj6",

@@ -2,8 +2,13 @@ import { useInputStore } from "@/store/input";
 import React, { useEffect, useState } from "react";
 import { GeneratorConfig, TeoriaNote } from "./types";
 import teoria from "teoria";
-import { Chord, Note } from "tonal";
-import { CHORD_SYMBOLS, CHORD_TYPES } from "./data/chord-symbols";
+import { AbcNotation, Chord, Note } from "tonal";
+import {
+  CHORD_SYMBOLS,
+  CHORD_TYPES,
+  OUT_OF_RANGE_SHARP_NOTES,
+  OUT_OF_RANGE_SHARP_NOTES_CONVERSION,
+} from "./data/chord-symbols";
 import { NOTE_LETTERS } from "@/helpers/constants";
 import { useAppStore } from "@/store/app";
 
@@ -12,7 +17,7 @@ type Props = {};
 const MusicTeacher = (props: Props) => {
   const [rootNote, setRootNote] = useState("C");
   const [octave, setOctave] = useState(4);
-  const { input, appInput, setMultiAppInput } = useInputStore();
+  const { input, appInput, setNewAppInput } = useInputStore();
   const { currentChord, setCurrentChord, addChordHistory } = useAppStore();
   const [currentNotes, setCurrentNotes] = useState<string[]>([]);
 
@@ -21,14 +26,40 @@ const MusicTeacher = (props: Props) => {
       CHORD_TYPES[Math.round(Math.random() * CHORD_TYPES.length)];
     // TODO: Use rootNote instead
     const randomNoteTonic =
-      NOTE_LETTERS[Math.round(Math.random() * NOTE_LETTERS.length)];
+      NOTE_LETTERS[Math.round(Math.random() * NOTE_LETTERS.length - 1)];
     const randomNoteBass =
       NOTE_LETTERS[Math.round(Math.random() * NOTE_LETTERS.length)];
-    const chord = Chord.getChord(randomType, rootNote, randomNoteBass);
-    console.log("tonal chord", chord.name, chord.notes);
+    const chord = Chord.notes("maj7", `${randomNoteTonic}${octave}`);
+    console.log("the chord", chord);
+    // We filter the notes if they include any out of range notes
+    // const notes = chord.filter(
+    //   (note) =>
+    //     !OUT_OF_RANGE_SHARP_NOTES.some((sharpNote) =>
+    //       sharpNote.includes(note.slice(0, -1)) // We slice off the octave here
+    //     )
+    // );
+    const notes = chord.map((note) => {
+      const noteOctave = note.slice(-1);
+      const noteWithoutOctave = note.slice(0, -1);
+      const isSharpNote = OUT_OF_RANGE_SHARP_NOTES.find(
+        (sharpNote) => sharpNote == noteWithoutOctave
+      );
+      console.log("sharp note", isSharpNote, noteWithoutOctave);
+      if (isSharpNote) {
+        const fixedNote =
+          OUT_OF_RANGE_SHARP_NOTES_CONVERSION[noteWithoutOctave];
+        console.log("fixed note", fixedNote);
+        return `${fixedNote}${noteOctave}`;
+      }
+      return note;
+    });
 
-    const newInput = chord.notes.reduce((merge, note) => {
-      const inputKey = `${note.replace("#", "b")}${octave}`;
+    console.log("OG vs Piano Notes:", chord, notes);
+
+    console.log("base note", randomNoteTonic);
+
+    const newInput = notes.reduce((merge, note) => {
+      const inputKey = note.replace("#", "b");
       return {
         ...merge,
         [inputKey]: true,
@@ -37,14 +68,14 @@ const MusicTeacher = (props: Props) => {
 
     return {
       input: newInput,
-      name: chord.name,
-      notes: chord.notes,
+      name: `${randomNoteTonic}4 Maj7`,
+      notes,
     };
   };
 
   const newChord = () => {
     const chord = generateNotes();
-    setMultiAppInput(chord.input);
+    setNewAppInput(chord.input);
     setCurrentChord(chord.name);
     setCurrentNotes(chord.notes);
   };
@@ -66,20 +97,17 @@ const MusicTeacher = (props: Props) => {
       .filter(([_, pressed]) => pressed)
       .map(([keyName]) => keyName);
 
+    // A few conditions here:
+    const isUserPressingEnoughKeys = pressedNotes.length == checkNotes.length;
     // Loop over all the notes we need to check for and see if they're pressed
-    let noteCheck = [];
-    checkNotes.forEach((checkNote) => {
-      if (pressedNotes.includes(checkNote)) {
-        noteCheck.push(true);
-      } else {
-        noteCheck.push(false);
-      }
-    });
-
-    const allNotesPressed = !noteCheck.includes(false);
+    const compareNotes = checkNotes.map((checkNote) =>
+      pressedNotes.includes(checkNote)
+    );
+    const allNotesPressed = !compareNotes.includes(false);
 
     // User successfully pressed all keys!
-    if (allNotesPressed) {
+    if (isUserPressingEnoughKeys && allNotesPressed) {
+      console.log("Generating new chord...");
       addChordHistory({
         name: currentChord,
         notes: checkNotes,
@@ -88,7 +116,13 @@ const MusicTeacher = (props: Props) => {
       newChord();
     }
 
-    console.log("all notes pressed", checkNotes, pressedNotes, allNotesPressed);
+    console.log(
+      "all notes pressed",
+      checkNotes,
+      pressedNotes,
+      allNotesPressed,
+      isUserPressingEnoughKeys
+    );
   }, [input, appInput]);
 
   return (

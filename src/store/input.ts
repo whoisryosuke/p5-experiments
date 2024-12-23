@@ -115,6 +115,7 @@ interface InputState {
   appInput: UserInputMap;
   setAppInput: (key: UserInputKeys, input: boolean) => void;
   setMultiAppInput: (keys: Partial<UserInputMap>) => void;
+  setNewAppInput: (keys: Partial<UserInputMap>) => void;
 }
 
 export const useInputStore = create<InputState>()((set) => ({
@@ -137,4 +138,13 @@ export const useInputStore = create<InputState>()((set) => ({
     set((state) => ({ appInput: { ...state.appInput, [key]: input } })),
   setMultiAppInput: (keys) =>
     set((state) => ({ appInput: { ...state.appInput, ...keys } })),
+  setNewAppInput: (keys) =>
+    set((state) => {
+      const inputKeys = Object.keys(state.appInput);
+      const resetInput = inputKeys.reduce(
+        (merge, key) => ({ ...merge, [key]: false }),
+        {} as UserInputMap
+      );
+      return { appInput: { ...resetInput, ...keys } };
+    }),
 }));
