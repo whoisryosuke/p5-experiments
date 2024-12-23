@@ -10,6 +10,21 @@ export type UserInputMap = Record<Note, boolean>;
 // Object.entries() version that's commonly used to iterate over it easily
 export type UserInputMapEntries = [Note, boolean][];
 
+export const ALL_NOTE_LETTERS: BaseNote[] = [
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+  "A",
+  "B",
+  "Cb",
+  "Db",
+  "Fb",
+  "Gb",
+  "Ab",
+];
+
 const DEFAULT_USER_MAP: UserInputMap = {
   C1: false,
   C2: false,

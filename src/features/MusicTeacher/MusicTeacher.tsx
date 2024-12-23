@@ -11,6 +11,7 @@ import {
 } from "./data/chord-symbols";
 import { NOTE_LETTERS } from "@/helpers/constants";
 import { useAppStore } from "@/store/app";
+import ChordSelector from "./ChordSelector/ChordSelector";
 
 type Props = {};
 
@@ -36,16 +37,12 @@ const MusicTeacher = (props: Props) => {
       NOTE_LETTERS[Math.floor(Math.random() * NOTE_LETTERS.length)];
     const randomNoteBass =
       NOTE_LETTERS[Math.floor(Math.random() * NOTE_LETTERS.length)];
+
     const actualNote = randomNote ? randomNoteTonic : rootNote;
+    // Generate the chord using the music theory library
     const chord = Chord.notes("maj7", `${actualNote}${octave}`);
-    console.log("the chord", chord);
+
     // We filter the notes if they include any out of range notes
-    // const notes = chord.filter(
-    //   (note) =>
-    //     !OUT_OF_RANGE_SHARP_NOTES.some((sharpNote) =>
-    //       sharpNote.includes(note.slice(0, -1)) // We slice off the octave here
-    //     )
-    // );
     const notes = chord.map((note) => {
       const noteOctave = note.slice(-1);
       const noteWithoutOctave = note.slice(0, -1);
@@ -76,7 +73,7 @@ const MusicTeacher = (props: Props) => {
 
     return {
       input: newInput,
-      name: `${actualNote}4 Maj7`,
+      name: `${actualNote}${octave} Maj7`,
       notes,
     };
   };
@@ -91,7 +88,7 @@ const MusicTeacher = (props: Props) => {
   // Hydrate app with initial keys
   useEffect(() => {
     newChord();
-  }, []);
+  }, [randomNote, rootNote, octave]);
 
   // Check for user input vs the learning keys
   // If user succeeds, generate new keys (maybe increase score / tell user somehow?)
@@ -150,6 +147,7 @@ const MusicTeacher = (props: Props) => {
 
   return (
     <div>
+      <ChordSelector />
       <div>
         {currentChord}: {currentNotes.join(", ")}
       </div>
