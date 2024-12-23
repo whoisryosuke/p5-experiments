@@ -5,6 +5,7 @@ import { SynthTypes } from "../features/Music/Music";
 import { ThemeOptions } from "themes";
 import { ThemeColors } from "themes/colors/base";
 import { ChordHistory } from "@/features/MusicTeacher/types";
+import { BaseNote } from "./input";
 // import type {} from "@redux-devtools/extension"; // required for devtools typing
 
 type CameraAngleOptions = "front" | "three_quarter" | "top";
@@ -26,6 +27,12 @@ interface AppState {
   setCameraAngle: (cameraAngle: CameraAngleOptions) => void;
 
   // Game
+  randomNote: boolean;
+  setRandomNote: (randomNote: boolean) => void;
+  rootNote: BaseNote;
+  setRootNote: (rootNote: BaseNote) => void;
+  octave: number;
+  setOctave: (rootNote: number) => void;
   currentChord: string;
   setCurrentChord: (currentChord: string) => void;
   chordHistory: ChordHistory[];
@@ -78,6 +85,12 @@ export const useAppStore = create<AppState>()(
     setCameraAngle: (cameraAngle) => set((state) => ({ cameraAngle })),
 
     // Game
+    randomNote: false,
+    setRandomNote: (randomNote) => set((state) => ({ randomNote })),
+    rootNote: "C",
+    setRootNote: (rootNote) => set((state) => ({ rootNote })),
+    octave: 4,
+    setOctave: (octave) => set((state) => ({ octave })),
     currentChord: "",
     setCurrentChord: (currentChord) => set((state) => ({ currentChord })),
     chordHistory: [],

@@ -34,4 +34,5 @@ export type ChordHistory = {
   name: string;
   notes: string[];
   octave: number;
+  time: number;
 };

@@ -1,5 +1,5 @@
 import { useInputStore } from "@/store/input";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { GeneratorConfig, TeoriaNote } from "./types";
 import teoria from "teoria";
 import { AbcNotation, Chord, Note } from "tonal";
@@ -15,21 +15,29 @@ import { useAppStore } from "@/store/app";
 type Props = {};
 
 const MusicTeacher = (props: Props) => {
-  const [rootNote, setRootNote] = useState("C");
-  const [octave, setOctave] = useState(4);
   const { input, appInput, setNewAppInput } = useInputStore();
-  const { currentChord, setCurrentChord, addChordHistory } = useAppStore();
+  const {
+    randomNote,
+    rootNote,
+    octave,
+    currentChord,
+    setCurrentChord,
+    chordHistory,
+    addChordHistory,
+  } = useAppStore();
   const [currentNotes, setCurrentNotes] = useState<string[]>([]);
+  const playingReset = useRef(false);
 
   const generateNotes = () => {
     const randomType =
-      CHORD_TYPES[Math.round(Math.random() * CHORD_TYPES.length)];
+      CHORD_TYPES[Math.floor(Math.random() * CHORD_TYPES.length)];
     // TODO: Use rootNote instead
     const randomNoteTonic =
-      NOTE_LETTERS[Math.round(Math.random() * NOTE_LETTERS.length - 1)];
+      NOTE_LETTERS[Math.floor(Math.random() * NOTE_LETTERS.length)];
     const randomNoteBass =
-      NOTE_LETTERS[Math.round(Math.random() * NOTE_LETTERS.length)];
-    const chord = Chord.notes("maj7", `${randomNoteTonic}${octave}`);
+      NOTE_LETTERS[Math.floor(Math.random() * NOTE_LETTERS.length)];
+    const actualNote = randomNote ? randomNoteTonic : rootNote;
+    const chord = Chord.notes("maj7", `${actualNote}${octave}`);
     console.log("the chord", chord);
     // We filter the notes if they include any out of range notes
     // const notes = chord.filter(
@@ -56,7 +64,7 @@ const MusicTeacher = (props: Props) => {
 
     console.log("OG vs Piano Notes:", chord, notes);
 
-    console.log("base note", randomNoteTonic);
+    console.log("base note", actualNote);
 
     const newInput = notes.reduce((merge, note) => {
       const inputKey = note.replace("#", "b");
@@ -68,7 +76,7 @@ const MusicTeacher = (props: Props) => {
 
     return {
       input: newInput,
-      name: `${randomNoteTonic}4 Maj7`,
+      name: `${actualNote}4 Maj7`,
       notes,
     };
   };
@@ -88,6 +96,19 @@ const MusicTeacher = (props: Props) => {
   // Check for user input vs the learning keys
   // If user succeeds, generate new keys (maybe increase score / tell user somehow?)
   useEffect(() => {
+    // Before we check if user has pressed keys - we do a "reset" cycle
+    // When we're not in random mode - the user could hold keys and repeatedly "finish"
+    // So we create a reset phase that requires user to release all keys before we acknowledge next chord
+    if (playingReset.current) {
+      const allPressedNotes = Object.entries(input).filter(
+        ([_, pressed]) => pressed
+      );
+      const hasUserReleasedAllKeys = allPressedNotes.length == 0;
+
+      if (hasUserReleasedAllKeys) playingReset.current = false;
+      return;
+    }
+
     // Get the keys we need to check for (e.g. `["C4", "D4"]`)
     const appNotes = Object.entries(appInput).filter(([_, pressed]) => pressed);
     const checkNotes = appNotes.map(([keyName]) => keyName);
@@ -112,8 +133,10 @@ const MusicTeacher = (props: Props) => {
         name: currentChord,
         notes: checkNotes,
         octave,
+        time: Date.now(),
       });
       newChord();
+      playingReset.current = true;
     }
 
     console.log(
@@ -127,7 +150,14 @@ const MusicTeacher = (props: Props) => {
 
   return (
     <div>
-      {currentChord}: {currentNotes.join(", ")}
+      <div>
+        {currentChord}: {currentNotes.join(", ")}
+      </div>
+      <div>
+        {chordHistory.slice(0, 10).map((history) => (
+          <p key={`${history.name}-${history.time}`}>{history.name}</p>
+        ))}
+      </div>
     </div>
   );
 };
