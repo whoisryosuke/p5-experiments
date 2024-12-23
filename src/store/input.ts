@@ -148,7 +148,7 @@ export const useInputStore = create<InputState>()((set) => ({
   setDeviceName: (deviceName) => set(() => ({ deviceName })),
 
   // Game settings
-  appInput: DEFAULT_USER_MAP,
+  appInput: { ...DEFAULT_USER_MAP, C4: true },
   setAppInput: (key, input) =>
     set((state) => ({ appInput: { ...state.appInput, [key]: input } })),
   setMultiAppInput: (keys) =>

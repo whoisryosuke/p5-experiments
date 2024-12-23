@@ -12,6 +12,7 @@ import {
 import { NOTE_LETTERS } from "@/helpers/constants";
 import { useAppStore } from "@/store/app";
 import ChordSelector from "./ChordSelector/ChordSelector";
+import ChordModes from "./ChordModes/ChordModes";
 
 type Props = {};
 
@@ -26,7 +27,7 @@ const MusicTeacher = (props: Props) => {
     chordHistory,
     addChordHistory,
   } = useAppStore();
-  const [currentNotes, setCurrentNotes] = useState<string[]>([]);
+  const [currentNotes, setCurrentNotes] = useState<string[]>(["C4"]);
   const playingReset = useRef(false);
 
   const generateNotes = () => {
@@ -148,6 +149,7 @@ const MusicTeacher = (props: Props) => {
   return (
     <div>
       <ChordSelector />
+      <ChordModes />
       <div>
         {currentChord}: {currentNotes.join(", ")}
       </div>
