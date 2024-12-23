@@ -43,7 +43,7 @@ const ChordSelector = (props: Props) => {
   const randomNoteOptions: SelectOption[] = useMemo(
     () =>
       [false, true].reduce((merge, value) => {
-        const title = value ? "Enabled" : "Disabled";
+        const title = value ? "Use Random Note" : "Use Root Note";
         const newOption: SelectOption = {
           key: title,
           value: value,
@@ -79,15 +79,17 @@ const ChordSelector = (props: Props) => {
   return (
     <Stack>
       <Select
-        value={rootNote}
-        onChange={handleRootNoteChange}
-        options={rootNoteOptions}
-      />
-      <Select
         value={randomNote}
         onChange={handleRandomNote}
         options={randomNoteOptions}
       />
+      {!randomNote && (
+        <Select
+          value={rootNote}
+          onChange={handleRootNoteChange}
+          options={rootNoteOptions}
+        />
+      )}
       <Select value={octave} onChange={handleOctave} options={octaveOptions} />
     </Stack>
   );
