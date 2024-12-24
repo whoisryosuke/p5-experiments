@@ -1,6 +1,8 @@
 import { PropsWithChildren } from "react";
 import styled from "styled-components";
 
+export const KEYBOARD_HEIGHT = 200;
+
 export const StyledKeyboardKeyContainer = styled.div`
   flex: 1;
   position: relative;
@@ -13,9 +15,12 @@ export type StyledKeyboardKeyWhiteProps = PropsWithChildren<{
 }>;
 
 export const StyledKeyboardKeyWhite = styled.div<StyledKeyboardKeyWhiteProps>`
-  height: 100px;
-  background-color: rgba(255, 255, 255, 0.5);
+  height: ${KEYBOARD_HEIGHT}px;
+  background: ${({ theme }) => theme.colors.piano.whiteKey.background.default};
+  box-shadow: ${({ theme }) => theme.colors.piano.whiteKey.boxShadow};
+  color: ${({ theme }) => theme.colors.piano.whiteKey.text};
   text-align: center;
+  padding-bottom: 0.5rem;
   display: flex;
   justify-content: center;
   align-items: flex-end;
@@ -25,21 +30,21 @@ export const StyledKeyboardKeyWhite = styled.div<StyledKeyboardKeyWhiteProps>`
   border-bottom-width: 2px;
   border-right-width: 0;
   border-style: solid;
-  border-color: rgba(200, 200, 200, 0.5);
+  border-color: rgba(200, 200, 200, 0.2);
 
   &:hover {
     background-color: rgba(0, 55, 255, 0.1);
   }
 
-  ${(props) =>
-    props.highlight &&
+  ${({ highlight, theme }) =>
+    highlight &&
     `
-      background-color: rgba(0, 174, 104, 0.9);
+      background: ${theme.colors.piano.whiteKey.background.highlight};
   `}
-  ${(props) =>
-    props.pressed &&
+  ${({ pressed, theme }) =>
+    pressed &&
     `
-      background-color: rgba(0,55,255,0.9);
+      background: ${theme.colors.piano.whiteKey.background.pressed};
     `}
 `;
 
@@ -52,8 +57,8 @@ export const KeyboardKeyWhiteLabel = styled.span`
 
 export const StyledKeyboardKeyBlack = styled.div<StyledKeyboardKeyWhiteProps>`
   width: 50%;
-  height: 50px;
-  background-color: rgba(0, 0, 0, 1);
+  height: ${KEYBOARD_HEIGHT / 2}px;
+  background: ${({ theme }) => theme.colors.piano.blackKey.background};
   text-align: center;
   position: absolute;
   display: flex;
