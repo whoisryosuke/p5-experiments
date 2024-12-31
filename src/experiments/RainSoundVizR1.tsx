@@ -100,14 +100,16 @@ const RainSoundVizR1 = (props: Props) => {
       p.strokeWeight(2);
       p.stroke(BASE_COLORS[`blue-4`]);
       p.beginShape();
-      let x = 0;
       for (let i = 0; i < bufferLength; i++) {
-        const v = dataArray[i] / 128.0;
+        // All the magic happens in the y axis here
+        // The audio data comes back in a range from 0 (lows) - 128 (mid) - 256 (high)
+        const audioFreqencyHeight = 128;
+        const v = p.map(dataArray[i], 0, audioFreqencyHeight, 0, 1);
+        // This centers line on screen
         const y = (v * p.height) / 2;
+        const x = i * segmentWidth;
 
         p.vertex(x, y);
-
-        x += segmentWidth;
       }
       p.endShape();
     };
