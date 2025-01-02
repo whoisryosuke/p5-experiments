@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { TEXT_STYLES, TextStyles } from "../../themes/tokens";
+import { TEXT_STYLES, TextStyles } from "themes/tokens";
 
 type Props = {
   as: TextStyles;

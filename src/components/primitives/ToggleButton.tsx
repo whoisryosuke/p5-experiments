@@ -1,17 +1,15 @@
 import React from "react";
-import { Button as AriaButton, ButtonProps } from "react-aria-components";
 import styled from "styled-components";
-import { BUTTON_STYLES } from "../../themes/styles/button";
 import InputLabel from "./InputLabel";
 
-type StyleProps = ButtonProps & {
+type StyleProps = {
   active?: boolean;
 };
 type ToggleButtonProps = StyleProps & {
   label: string;
 };
 
-const ToggleButtonBase = styled(AriaButton)<StyleProps>`
+const ToggleButtonBase = styled("button")<StyleProps>`
   appearance: none;
   vertical-align: middle;
   text-align: center;

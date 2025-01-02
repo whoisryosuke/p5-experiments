@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Theme } from "../../themes";
+import { Theme } from "themes";
 
 type Props = {
   fontSize?: keyof Theme["fontSizes"];

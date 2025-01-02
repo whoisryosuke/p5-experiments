@@ -7,7 +7,7 @@ import {
   SliderTrack as AriaSliderTrack,
 } from "react-aria-components";
 import styled from "styled-components";
-import { BUTTON_STYLES } from "../../themes/styles/button";
+import { BUTTON_STYLES } from "themes/styles/button";
 
 const SLIDER_TRACK_HEIGHT = 14;
 const SLIDER_PROGRESS_PADDING = 3;

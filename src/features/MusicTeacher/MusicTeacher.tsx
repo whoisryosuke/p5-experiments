@@ -13,6 +13,7 @@ import { NOTE_LETTERS } from "@/helpers/constants";
 import { useAppStore } from "@/store/app";
 import ChordSelector from "./ChordSelector/ChordSelector";
 import ChordModes from "./ChordModes/ChordModes";
+import Text from "@/components/primitives/Text";
 
 type Props = {};
 
@@ -151,7 +152,9 @@ const MusicTeacher = (props: Props) => {
       <ChordSelector />
       <ChordModes />
       <div>
-        {currentChord}: {currentNotes.join(", ")}
+        <Text fontSize={4}>
+          <strong>{currentChord}:</strong> {currentNotes.join(", ")}
+        </Text>
       </div>
       <div>
         {chordHistory.slice(0, 10).map((history) => (

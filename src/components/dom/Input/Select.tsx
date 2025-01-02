@@ -1,3 +1,4 @@
+import Dropdown from "@/components/primitives/Dropdown";
 import React from "react";
 
 export type SelectOption = {
@@ -14,13 +15,13 @@ type Props = {
 
 const Select = ({ value, onChange, options, ...props }: Props) => {
   return (
-    <select value={value} onChange={onChange} {...props}>
+    <Dropdown value={value} onChange={onChange} {...props}>
       {options.map((option) => (
         <option key={option.key} value={option.value}>
           {option.name}
         </option>
       ))}
-    </select>
+    </Dropdown>
   );
 };
 

@@ -71,14 +71,14 @@ export const StyledKeyboardKeyBlack = styled.div<StyledKeyboardKeyWhiteProps>`
   z-index: 420;
 
   &:hover {
-    background-color: rgba(0, 0, 100, 1);
+    background: rgba(0, 0, 100, 1);
   }
 
   ${(props) =>
     props.highlight &&
     `
       color:rgba(0,0,0,0.9);
-      background-color: rgba(0,255,55,0.5);
+      background: rgba(0,255,55,0.5);
 
       & > span {
        color:rgba(0,0,0,0.9);
@@ -87,7 +87,7 @@ export const StyledKeyboardKeyBlack = styled.div<StyledKeyboardKeyWhiteProps>`
   ${(props) =>
     props.pressed &&
     `
-      background-color: rgba(0,55,255,0.5);
+      background: rgba(0,55,255,0.5);
   `}
 `;
 

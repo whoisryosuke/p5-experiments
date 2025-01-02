@@ -7,7 +7,7 @@ import {
   SliderTrack as AriaSliderTrack,
 } from "react-aria-components";
 import styled from "styled-components";
-import { BUTTON_STYLES } from "../../../themes/styles/button";
+import { BUTTON_STYLES } from "themes/styles/button";
 import KnobProgressBG from "./KnobProgressBG";
 import KnobProgressBar from "./KnobProgressBar";
 import InputLabel from "../InputLabel";

@@ -1,6 +1,8 @@
 import { useAppStore } from "@/store/app";
 import React, { useEffect, useRef, useState } from "react";
 import { ChordHistory } from "../types";
+import Button from "@/components/primitives/Button";
+import Text from "@/components/primitives/Text";
 
 type Props = {};
 
@@ -48,13 +50,13 @@ const ChordModes = (props: Props) => {
 
   return (
     <div>
-      <span>
+      <Text>
         <strong>Mode:</strong>
         {mode}
-      </span>
-      <button onClick={handleToggleEnabled}>
+      </Text>
+      <Button onClick={handleToggleEnabled}>
         {enabled ? "Pause Mode" : "Start Mode"}
-      </button>
+      </Button>
     </div>
   );
 };
