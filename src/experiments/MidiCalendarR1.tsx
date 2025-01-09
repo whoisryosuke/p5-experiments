@@ -74,10 +74,35 @@ const MidiCalendarR1 = (props: Props) => {
           animation: {
             x: 0,
             y: 0,
-            opacity: 1,
+            opacity: 0,
           },
         };
-        dayParticles.push(newParticle);
+        const particleLength = dayParticles.push(newParticle);
+
+        const currentParticle = dayParticles[particleLength - 1];
+
+        // Trigger animation
+        const sequence: AnimationSequence = [
+          [
+            currentParticle.animation,
+            {
+              x: 0,
+              y: 50,
+              opacity: 0,
+            },
+            { duration: 1 },
+          ],
+          [
+            currentParticle.animation,
+            {
+              x: 0,
+              y: 0,
+              opacity: 1,
+            },
+            { duration: 1 },
+          ],
+        ];
+        animate(sequence);
       });
     };
 
@@ -191,18 +216,22 @@ const MidiCalendarR1 = (props: Props) => {
           weekNumber * boxSizeHeight + screenPaddingX + state.animation.y;
 
         // Fill color
+        const destroyColor = baseX + (weekNumber % 2) == 1 ? "red" : "orange";
         const randomColor =
           THEME_COLORS[Math.floor(Math.random() * THEME_COLORS.length)];
         // p.fill(p.color(BASE_COLORS[`${randomColor}-5`]));
         let fillColor = p.color(BASE_COLORS[`gray-7`]);
         if (state.destroy) {
-          fillColor = p.color(BASE_COLORS[`red-5`]);
+          fillColor = p.color(BASE_COLORS[`${destroyColor}-5`]);
         }
         fillColor.setAlpha(state.animation.opacity * 255);
         p.fill(fillColor);
 
         // Stroke color
-        const strokeColor = p.color(BASE_COLORS["gray-5"]);
+        let strokeColor = p.color(BASE_COLORS[`gray-5`]);
+        if (state.destroy) {
+          strokeColor = p.color(BASE_COLORS[`${destroyColor}-3`]);
+        }
         strokeColor.setAlpha(state.animation.opacity * 255);
         p.strokeWeight(3);
         p.stroke(strokeColor);
@@ -225,7 +254,7 @@ const MidiCalendarR1 = (props: Props) => {
         p.fill(textColor);
         p.strokeWeight(0);
         p.textSize(16);
-        p.text(dayNumber, x + datePadding, y + datePadding);
+        p.text(dayNumber + 1, x + datePadding, y + datePadding);
       });
 
       // new Array(WEEKS_IN_A_MONTH).fill(0).map((_, baseY) => {
