@@ -202,7 +202,7 @@ const MidiCalendarR1 = (props: Props) => {
       });
       p.strokeWeight(0);
       if (fontFamily !== null) p.textFont(fontFamily);
-      p.textSize(48);
+      p.textSize(256);
       p.textAlign(p.CENTER);
       p.text(monthName, p.width / 2, screenPaddingX - 36);
 
@@ -217,10 +217,9 @@ const MidiCalendarR1 = (props: Props) => {
 
         // Fill color
         const destroyColor = baseX + (weekNumber % 2) == 1 ? "red" : "orange";
-        const randomColor =
-          THEME_COLORS[Math.floor(Math.random() * THEME_COLORS.length)];
+        const randomColor = THEME_COLORS[dayNumber % THEME_COLORS.length];
         // p.fill(p.color(BASE_COLORS[`${randomColor}-5`]));
-        let fillColor = p.color(BASE_COLORS[`gray-7`]);
+        let fillColor = p.color(BASE_COLORS[`${randomColor}-7`]);
         if (state.destroy) {
           fillColor = p.color(BASE_COLORS[`${destroyColor}-5`]);
         }
@@ -248,26 +247,15 @@ const MidiCalendarR1 = (props: Props) => {
         );
 
         // Draw date
-        const datePadding = 32;
+        const datePaddingX = boxSizeWidth * 0.1;
+        const datePaddingY = boxSizeHeight * 0.3;
         let textColor = p.color(BASE_COLORS[`gray-2`]);
         textColor.setAlpha(state.animation.opacity * 255);
         p.fill(textColor);
         p.strokeWeight(0);
-        p.textSize(16);
-        p.text(dayNumber + 1, x + datePadding, y + datePadding);
+        p.textSize(32);
+        p.text(dayNumber + 1, x + datePaddingX, y + datePaddingY);
       });
-
-      // new Array(WEEKS_IN_A_MONTH).fill(0).map((_, baseY) => {
-      //   new Array(DAYS_IN_A_WEEK).fill(0).map((_, baseX) => {
-      //     const x = baseX * boxSizeWidth + screenPaddingX;
-      //     const y = baseY * boxSizeHeight + screenPaddingX;
-
-      //     const randomColor =
-      //       THEME_COLORS[Math.floor(Math.random() * THEME_COLORS.length)];
-      //     p.fill(p.color(BASE_COLORS[`${randomColor}-5`]));
-      //     p.rect(x, y, boxSizeWidth, boxSizeHeight, ...boxRadius);
-      //   });
-      // });
     };
   };
 
