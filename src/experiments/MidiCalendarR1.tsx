@@ -44,17 +44,32 @@ const MidiCalendarR1 = (props: Props) => {
       const boxSizeHeight = 100;
       const boxRadius = [16, 16, 16, 16];
 
-      new Array(WEEKS_IN_A_MONTH).fill(0).map((_, baseY) => {
-        new Array(DAYS_IN_A_WEEK).fill(0).map((_, baseX) => {
-          const x = baseX * boxSizeWidth + screenPaddingX;
-          const y = baseY * boxSizeHeight + screenPaddingX;
+      const DAYS_IN_A_MONTH = 31;
+      new Array(DAYS_IN_A_MONTH).fill(0).map((_, dayNumber) => {
+        const weekNumber = Math.floor(dayNumber / 7);
+        const baseX = dayNumber % 7;
 
-          const randomColor =
-            THEME_COLORS[Math.floor(Math.random() * THEME_COLORS.length)];
-          p.fill(p.color(BASE_COLORS[`${randomColor}-5`]));
-          p.rect(x, y, boxSizeWidth, boxSizeHeight, ...boxRadius);
-        });
+        const x = baseX * boxSizeWidth + screenPaddingX;
+        const y = weekNumber * boxSizeHeight + screenPaddingX;
+
+        const randomColor =
+          THEME_COLORS[Math.floor(Math.random() * THEME_COLORS.length)];
+        // p.fill(p.color(BASE_COLORS[`${randomColor}-5`]));
+        p.fill(p.color(BASE_COLORS[`blue-5`]));
+        p.rect(x, y, boxSizeWidth, boxSizeHeight, ...boxRadius);
       });
+
+      // new Array(WEEKS_IN_A_MONTH).fill(0).map((_, baseY) => {
+      //   new Array(DAYS_IN_A_WEEK).fill(0).map((_, baseX) => {
+      //     const x = baseX * boxSizeWidth + screenPaddingX;
+      //     const y = baseY * boxSizeHeight + screenPaddingX;
+
+      //     const randomColor =
+      //       THEME_COLORS[Math.floor(Math.random() * THEME_COLORS.length)];
+      //     p.fill(p.color(BASE_COLORS[`${randomColor}-5`]));
+      //     p.rect(x, y, boxSizeWidth, boxSizeHeight, ...boxRadius);
+      //   });
+      // });
     };
   };
 
