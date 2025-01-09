@@ -48,6 +48,7 @@ const MidiCalendarR1 = (props: Props) => {
       Gb4: false,
       Ab4: false,
     };
+    let lockInput = false;
 
     const changeToNextMonth = () => {
       currentDate = new Date(
@@ -137,10 +138,12 @@ const MidiCalendarR1 = (props: Props) => {
       const nextIndex = currentDayIndex + 1;
       if (nextIndex >= dayParticles.length) {
         // Next month
+        lockInput = true;
         setTimeout(() => {
           console.log("Next month!");
           changeToNextMonth();
           generateParticlesForMonth();
+          lockInput = false;
         }, 2000);
       } else {
         currentDayIndex = nextIndex;
@@ -169,20 +172,22 @@ const MidiCalendarR1 = (props: Props) => {
       const { input } = useInputStore.getState();
 
       // Check if notes changed
-      const inputState = Object.entries(input).filter(([noteKey, noteState]) =>
-        noteKey.includes("4")
-      );
-      inputState.forEach(([noteKey, notePressed]) => {
-        // Key was pressed or released
-        if (localInput[noteKey] !== notePressed) {
-          // Spawn a note if pressed
-          if (notePressed) {
-            console.log("spawning note");
-            destroyParticle();
+      if (!lockInput) {
+        const inputState = Object.entries(input).filter(
+          ([noteKey, noteState]) => noteKey.includes("4")
+        );
+        inputState.forEach(([noteKey, notePressed]) => {
+          // Key was pressed or released
+          if (localInput[noteKey] !== notePressed) {
+            // Spawn a note if pressed
+            if (notePressed) {
+              console.log("spawning note");
+              destroyParticle();
+            }
+            localInput[noteKey] = notePressed;
           }
-          localInput[noteKey] = notePressed;
-        }
-      });
+        });
+      }
 
       const biggestEdge = p.width < p.height ? p.width : p.height;
 
