@@ -1,35 +1,9 @@
-import { readdirSync } from "fs";
-import Link from "next/link";
-import path from "path";
+import MusicTeacherPage from "@/features/MusicTeacher/MusicTeacherPage";
 
-export default function Page({ pages }) {
+export default function Page() {
   return (
     <>
-      <div style={{ padding: "3rem" }}>
-        <h1>Experiments</h1>
-        <ul>
-          {pages.map((page) => (
-            <li key={page}>
-              <Link href={`/experiments/${page}`}>
-                {page.replace("-", " ")}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <MusicTeacherPage />
     </>
   );
-}
-
-export async function getStaticProps() {
-  const experimentPath = path.join("./src/pages/experiments");
-  const experimentPages = readdirSync(experimentPath);
-  const pages = experimentPages.map((page) => page.replace(".tsx", ""));
-
-  return {
-    props: {
-      title: "",
-      pages,
-    },
-  };
 }

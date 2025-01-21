@@ -1,3 +1,5 @@
+import { BASE_COLORS } from "./base";
+
 export const primaryColors = {
   text: "rgba(234,234,241,1)",
   textOverlay: "rgba(234,234,241,0.7)",
@@ -32,6 +34,7 @@ export const primaryColors = {
 
 export const colors = {
   ...primaryColors,
+  ...BASE_COLORS,
 };
 
 export const gradients = {
