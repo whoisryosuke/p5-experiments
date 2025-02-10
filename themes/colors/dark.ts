@@ -59,11 +59,7 @@ export const generateDarkTheme = (color: ThemeColors) => ({
     piano: {
       whiteKey: {
         text: BASE_COLORS["gray-6"],
-        background: {
-          default: "linear-gradient(270deg, #f2f9ff 0%, #dee2e6 100%)",
-          pressed: `linear-gradient(270deg, ${BASE_COLORS["blue-3"]} 0%, ${BASE_COLORS["blue-4"]} 100%)`,
-          highlight: `linear-gradient(270deg, ${BASE_COLORS["green-3"]} 0%, ${BASE_COLORS["green-4"]} 100%)`,
-        },
+        background: "linear-gradient(270deg, #f2f9ff 0%, #dee2e6 100%)",
         boxShadow: `0px 1px 4.2px rgba(0, 0, 0, 0.5),
     0px 0px 8.2px rgba(255, 255, 255, 0.1),
     inset 0px -4px 1.5px rgba(0, 0, 0, 0.25)`,
@@ -91,7 +87,6 @@ export const generateDarkTheme = (color: ThemeColors) => ({
     // secondary: primaryColors.purple[500],
     muted: "#f6f6f9",
     highlight: "hsla(205, 100%, 40%, 0.125)",
-    ...BASE_COLORS,
   },
 
   gradients: {

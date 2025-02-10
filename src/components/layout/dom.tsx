@@ -11,7 +11,6 @@ const Dom = ({ children }) => {
     <div
       className="dom"
       style={{
-        width: "100%",
         position: "absolute",
         top: 0,
         left: 0,

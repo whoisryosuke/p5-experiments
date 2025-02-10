@@ -10,21 +10,6 @@ export type UserInputMap = Record<Note, boolean>;
 // Object.entries() version that's commonly used to iterate over it easily
 export type UserInputMapEntries = [Note, boolean][];
 
-export const ALL_NOTE_LETTERS: BaseNote[] = [
-  "C",
-  "D",
-  "E",
-  "F",
-  "G",
-  "A",
-  "B",
-  "Cb",
-  "Db",
-  "Fb",
-  "Gb",
-  "Ab",
-];
-
 const DEFAULT_USER_MAP: UserInputMap = {
   C1: false,
   C2: false,
@@ -126,11 +111,6 @@ interface InputState {
   setCurrentDevice: (currentDevice: string) => void;
   deviceName: string;
   setDeviceName: (deviceName: string) => void;
-
-  appInput: UserInputMap;
-  setAppInput: (key: UserInputKeys, input: boolean) => void;
-  setMultiAppInput: (keys: Partial<UserInputMap>) => void;
-  setNewAppInput: (keys: Partial<UserInputMap>) => void;
 }
 
 export const useInputStore = create<InputState>()((set) => ({
@@ -146,20 +126,4 @@ export const useInputStore = create<InputState>()((set) => ({
   setCurrentDevice: (currentDevice) => set(() => ({ currentDevice })),
   deviceName: "Keyboard",
   setDeviceName: (deviceName) => set(() => ({ deviceName })),
-
-  // Game settings
-  appInput: { ...DEFAULT_USER_MAP, C4: true },
-  setAppInput: (key, input) =>
-    set((state) => ({ appInput: { ...state.appInput, [key]: input } })),
-  setMultiAppInput: (keys) =>
-    set((state) => ({ appInput: { ...state.appInput, ...keys } })),
-  setNewAppInput: (keys) =>
-    set((state) => {
-      const inputKeys = Object.keys(state.appInput);
-      const resetInput = inputKeys.reduce(
-        (merge, key) => ({ ...merge, [key]: false }),
-        {} as UserInputMap
-      );
-      return { appInput: { ...resetInput, ...keys } };
-    }),
 }));
