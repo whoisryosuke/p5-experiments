@@ -25,6 +25,7 @@
     "@react-three/drei": "^9.115.0",
     "@react-three/fiber": "^8.13.4",
     "@react-three/postprocessing": "^2.15.1",
+    "@tonejs/midi": "^2.0.28",
     "babel-plugin-glsl": "^1.0.0",
     "glsl-random": "^0.0.5",
     "leva": "^0.9.27",

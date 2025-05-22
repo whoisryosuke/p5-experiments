@@ -1493,6 +1493,14 @@
     ejs "^2.6.1"
     magic-string "^0.25.0"
 
+"@tonejs/midi@^2.0.28":
+  version "2.0.28"
+  resolved "https://registry.yarnpkg.com/@tonejs/midi/-/midi-2.0.28.tgz#2fad0f62aa9a95ab0b5f151a6dcf03408f8d5442"
+  integrity sha512-RII6YpInPsOZ5t3Si/20QKpNqB1lZ2OCFJSOzJxz38YdY/3zqDr3uaml4JuCWkdixuPqP1/TBnXzhQ39csyoVg==
+  dependencies:
+    array-flatten "^3.0.0"
+    midi-file "^1.2.2"
+
 "@tweenjs/tween.js@~23.1.1", "@tweenjs/tween.js@~23.1.3":
   version "23.1.3"
   resolved "https://registry.yarnpkg.com/@tweenjs/tween.js/-/tween.js-23.1.3.tgz#eff0245735c04a928bb19c026b58c2a56460539d"
@@ -1811,6 +1819,11 @@ aria-query@^4.2.2:
   dependencies:
     "@babel/runtime" "^7.10.2"
     "@babel/runtime-corejs3" "^7.10.2"
+
+array-flatten@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/array-flatten/-/array-flatten-3.0.0.tgz#6428ca2ee52c7b823192ec600fa3ed2f157cd541"
+  integrity sha512-zPMVc3ZYlGLNk4mpK1NzP2wg0ml9t7fUgDsayR5Y5rSzxQilzR9FGu/EH2jQOcKSAeAfWeylyW8juy3OkWRvNA==
 
 array-includes@^3.1.4:
   version "3.1.5"
@@ -3853,6 +3866,11 @@ micromatch@^4.0.4:
   dependencies:
     braces "^3.0.2"
     picomatch "^2.3.1"
+
+midi-file@^1.2.2:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/midi-file/-/midi-file-1.2.4.tgz#e5803a8fc79cdd1692ac6ef6b1491043b397eb87"
+  integrity sha512-B5SnBC6i2bwJIXTY9MElIydJwAmnKx+r5eJ1jknTLetzLflEl0GWveuBB6ACrQpecSRkOB6fhTx1PwXk2BVxnA==
 
 mime-db@1.52.0:
   version "1.52.0"
