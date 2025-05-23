@@ -33,6 +33,9 @@ const MidiCirclePlayerR1 = (props: Props) => {
 
       const duration = 10 * 1000; // in ms
       const timeLoop = time % duration;
+      // The "animation" - we take our time (that's looping every 10s)
+      // and map it to the length of a full circle.
+      // So 0s = beginning of circle and `duration` = the end
       const timeAnimation = p.map(timeLoop, 0, duration, 0, p.PI * 2);
 
       const biggestEdge = p.width < p.height ? p.width : p.height;
@@ -41,6 +44,8 @@ const MidiCirclePlayerR1 = (props: Props) => {
       const width = biggestEdge / 2;
       const height = biggestEdge / 2;
 
+      // We draw an "arc" or partial circle
+      // and we draw a segment that travels the length of the circle
       p.arc(x, y, width, height, timeAnimation, timeAnimation + SEGMENT_SIZE);
     };
   };
