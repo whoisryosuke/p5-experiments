@@ -5,7 +5,16 @@ import path from "path";
 export default function Page({ pages }) {
   return (
     <>
-      <div style={{ padding: "3rem" }}>
+      <div
+        style={{
+          position: "fixed",
+          width: "100%",
+          height: "100%",
+          inset: 0,
+          padding: "3rem",
+          overflowY: "scroll",
+        }}
+      >
         <h1>Experiments</h1>
         <ul>
           {pages.map((page) => (

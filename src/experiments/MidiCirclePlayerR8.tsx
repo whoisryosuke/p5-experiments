@@ -19,14 +19,14 @@ type Particle = {
   };
 };
 
-const FILENAME = "MidiCirclePlayerR7";
+const FILENAME = "MidiCirclePlayerR8";
 const MIDI_FILE_PATH = "games/MML_apple_market.mid";
 const MIDI_TRACK_INDEX = 4;
 const BOX_BORDER_RADIUS = 16;
 const NOTE_FADE_DURATION = 1;
 const TIMELINE_DURATION = 5;
 
-const MidiCirclePlayerR7 = (props: Props) => {
+const MidiCirclePlayerR8 = (props: Props) => {
   const Sketch = (p: p5) => {
     let time = 0;
     let fontFamily = null;
@@ -101,6 +101,8 @@ const MidiCirclePlayerR7 = (props: Props) => {
       //       console.log("opacity animating", index);
       //   });
       // }, 1000);
+
+      // setInterval(destroyParticles, TIMELINE_DURATION);
     };
     p.keyPressed = () => {
       saveArt(p, FILENAME);
@@ -112,7 +114,7 @@ const MidiCirclePlayerR7 = (props: Props) => {
         // Don't check previous notes
         if (index <= lastNoteSpawned) return;
         // Don't add notes after 0.1 seconds from now
-        if (time < note.time + 0.1) return;
+        if (time < note.time + 0.5) return;
 
         console.log("[SPAWNING PARTICLE]", note.name);
 
@@ -169,14 +171,22 @@ const MidiCirclePlayerR7 = (props: Props) => {
       );
     };
 
-    const destroyParticles = (time: number) => {
+    const destroyParticles = () => {
+      if (!midiFile) return;
+      const timeInSeconds = time / 1000;
       const currentTrack = midiFile.tracks[MIDI_TRACK_INDEX];
       particles.forEach((track, trackIndex) => {
         track.forEach((particle, particleIndex) => {
           const note = currentTrack.notes[particle.note];
 
           // Is current time past a note's total possible visibility?
-          if (time > note.time + TIMELINE_DURATION) {
+          if (timeInSeconds > note.time + TIMELINE_DURATION) {
+            console.log(
+              "deleting?",
+              timeInSeconds,
+              note.time,
+              note.time + TIMELINE_DURATION
+            );
             // Start Animation
             const currentParticle = particles[trackIndex][particleIndex];
             const sequence: AnimationSequence = [
@@ -198,6 +208,7 @@ const MidiCirclePlayerR7 = (props: Props) => {
             const animation = animate(sequence);
 
             animation.then(() => deleteParticle(trackIndex, particle.note));
+            // deleteParticle(trackIndex, particle.note);
           }
         });
       });
@@ -214,7 +225,6 @@ const MidiCirclePlayerR7 = (props: Props) => {
 
       // Spawn particles
       spawnParticles(timeInSeconds);
-      destroyParticles(timeInSeconds);
 
       p.background(p.color(BASE_COLORS["gray-9"])); // Set the background to black
       if (fontFamily !== null) p.textFont(fontFamily);
@@ -416,4 +426,4 @@ const MidiCirclePlayerR7 = (props: Props) => {
   return <P5Sketch sketch={Sketch} />;
 };
 
-export default MidiCirclePlayerR7;
+export default MidiCirclePlayerR8;
