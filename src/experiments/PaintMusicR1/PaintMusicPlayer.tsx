@@ -7,6 +7,10 @@ import { BASE_COLORS } from "themes/colors/base";
 
 // In ms
 const TOTAL_TIME = 6000;
+type FreqNode = {
+  osc: OscillatorNode;
+  gain: GainNode;
+};
 
 type Props = {};
 
@@ -30,6 +34,10 @@ const PaintMusicR1 = (props: Props) => {
   const Sketch = (p: p5) => {
     let playing = false;
     let time = 0;
+    let audioCtx: AudioContext = null;
+    let freqNodes: FreqNode[] = [];
+    // Number is index that maps to `freqNodes`
+    let audioNodes: number[] = [];
 
     const getXFromTime = () => {
       return (time / TOTAL_TIME) * p.width;
@@ -55,7 +63,7 @@ const PaintMusicR1 = (props: Props) => {
       let segments: Array<Array<number>> = [];
       for (let i = 0; i < data.length; i += 4) {
         // const currentSegment = Math.floor(noteSegmentSize * i);
-        const currentSegment = Math.floor(p.map(i, 0, data.length, 0, 11));
+        const currentSegment = Math.ceil(p.map(i, 0, data.length, 0, 11));
         console.log("current segment", currentSegment);
 
         // data[i] // red
@@ -78,14 +86,92 @@ const PaintMusicR1 = (props: Props) => {
       );
       console.log("averaged array - ideally notes?", segmentsAveraged);
 
+      // Play notes using the averaged data
+      // In this case we'll use green color to control volume
+      updateOscillatorsIntensity(segmentsAveraged);
+      playOscillators(segmentsAveraged);
+      segmentsAveraged.forEach((avg) => {});
+
       // Loop
       if (playing) requestAnimationFrame(playSound);
+    };
+
+    const updateOscillatorsIntensity = (volumes: number[]) => {
+      freqNodes.forEach((node, index) => {
+        // console.log("updating intensity", index, volumes[index]);
+        node.gain.gain.value = volumes[index];
+      });
+    };
+
+    const playOscillators = (volumes: number[]) => {
+      volumes.forEach((volume, index) => {
+        const node = freqNodes[index];
+        // 0? Don't play sound
+        if (volume <= 0) {
+          // Disconnect all prev nodes
+          node.gain.disconnect();
+        }
+        // Play sound
+        node.gain.connect(audioCtx.destination);
+      });
+    };
+
+    const stopSound = () => {
+      disconnectGainNodes();
+    };
+
+    const disconnectGainNodes = () => {
+      // Disconnect all prev nodes
+      freqNodes.forEach((node) => {
+        node.gain.disconnect();
+      });
+    };
+
+    const connectAudioNodes = () => {
+      // Disconnect all prev nodes
+      freqNodes.forEach((node) => {
+        node.osc.disconnect();
+        node.gain.disconnect();
+      });
+
+      // Chain audio nodes to output
+      audioNodes.forEach((nodeIndex) => {
+        const nodes = freqNodes[nodeIndex];
+        nodes.osc.connect(nodes.gain);
+        nodes.gain.connect(audioCtx.destination);
+      });
     };
 
     p.setup = () => {
       console.log("setup canvas");
       p.createCanvas(window.innerWidth, window.innerHeight);
       p.stroke(255); // Set line drawing color to white
+
+      // setup audio
+      audioCtx = new AudioContext();
+
+      // Setup 12 oscillators for each note that needs to play
+      new Array(12).fill(0).forEach((_, index) => {
+        const gain = audioCtx.createGain();
+        const osc = audioCtx.createOscillator();
+        osc.type = "sine";
+        // Oscillators use frequency to determine "sound".
+        // 440hz = A4 note, 220hz = A3 note.
+        // We map from C4 to B4 (which is 261-492 Hz)
+        // Ideally if you wanted to change octave just 1/2 or double as needed.
+        osc.frequency.value = p.map(index, 0, 12, 261, 493);
+
+        // We connect oscillator to gain
+        // To make sound - we just connect/disconnect gain node from output
+        osc.connect(gain);
+
+        // The way oscillators work - once you stop, they have to be recreated
+        // So we start here and when we want to play, we connect oscillator to output.
+        // And to stop playing, we disconnect it
+        osc.start();
+
+        freqNodes.push({ osc, gain });
+      });
     };
     p.keyPressed = () => {
       if (p.key == "k") {
@@ -93,14 +179,14 @@ const PaintMusicR1 = (props: Props) => {
         console.log("playing", playing);
 
         if (playing) playSound();
+        if (!playing) stopSound();
       }
     };
     p.draw = () => {
       p.clear();
       // p.background(p.color(BASE_COLORS["gray-9"]));
       if (playing) {
-        console.log("time", time);
-        console.log("canvas", soundCanvas.current);
+        // console.log("time", time);
       }
 
       p.noStroke();
