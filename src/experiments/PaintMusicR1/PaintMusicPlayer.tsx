@@ -2,7 +2,7 @@ import P5Sketch from "@/components/P5Sketch";
 import { drawCircle } from "@/helpers/drawing/drawCircle";
 import { saveArt } from "@/helpers/drawing/saveArt";
 import p5 from "p5";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { BASE_COLORS } from "themes/colors/base";
 
 // In ms
@@ -11,9 +11,77 @@ const TOTAL_TIME = 6000;
 type Props = {};
 
 const PaintMusicR1 = (props: Props) => {
+  const soundCanvas = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    function getCanvas() {
+      const canvasEl = document
+        .getElementById("canvas-wrapper")
+        .getElementsByTagName("canvas")[0];
+      console.log("checking for canvas");
+      if (canvasEl) {
+        console.log("got canvas", canvasEl);
+        soundCanvas.current = canvasEl;
+      }
+    }
+    setTimeout(getCanvas, 1000);
+  }, []);
+
   const Sketch = (p: p5) => {
     let playing = false;
     let time = 0;
+
+    const getXFromTime = () => {
+      return (time / TOTAL_TIME) * p.width;
+    };
+
+    const playSound = () => {
+      if (!soundCanvas.current) return;
+      // Sample canvas for a sliver of it to detect frequency
+      const ctx = soundCanvas.current.getContext("2d");
+      const x = Math.floor(getXFromTime());
+      console.log("sound x", x);
+      // We take a 1px by `CANVAS_HEIGHT` pixel sample
+      const canvasSample = ctx.getImageData(x, 0, 1, p.height);
+
+      const data = canvasSample.data;
+      // console.log("canvas data", data);
+
+      // Image data contains RGBA, so this tells us how many "colors" or "pixels" we're sampling
+      const dataSize = data.length / 4;
+      const noteSegmentSize = data.length / 12;
+
+      // Loop over each segment and average the color
+      let segments: Array<Array<number>> = [];
+      for (let i = 0; i < data.length; i += 4) {
+        // const currentSegment = Math.floor(noteSegmentSize * i);
+        const currentSegment = Math.floor(p.map(i, 0, data.length, 0, 11));
+        console.log("current segment", currentSegment);
+
+        // data[i] // red
+        // data[i + 1] // green
+        // data[i + 2] // blue
+
+        // console.log("green data", data[i + 1]);
+        if (!Array.isArray(segments[currentSegment]))
+          segments[currentSegment] = [];
+        segments[currentSegment].push(data[i + 1]);
+      }
+
+      console.log(
+        "segments",
+        segments[4].filter((sample) => sample > 0)
+      );
+      // We average the color samples of each segment - and map them to 0-1 (from 0-255 color range)
+      const segmentsAveraged = segments.map(
+        (segment) => segment.reduce((a, b) => a + b) / segment.length / 255
+      );
+      console.log("averaged array - ideally notes?", segmentsAveraged);
+
+      // Loop
+      if (playing) requestAnimationFrame(playSound);
+    };
+
     p.setup = () => {
       console.log("setup canvas");
       p.createCanvas(window.innerWidth, window.innerHeight);
@@ -23,16 +91,21 @@ const PaintMusicR1 = (props: Props) => {
       if (p.key == "k") {
         playing = !playing;
         console.log("playing", playing);
+
+        if (playing) playSound();
       }
     };
     p.draw = () => {
       p.clear();
       // p.background(p.color(BASE_COLORS["gray-9"]));
-      if (playing) console.log("time", time);
+      if (playing) {
+        console.log("time", time);
+        console.log("canvas", soundCanvas.current);
+      }
 
       p.noStroke();
       p.fill(p.color(BASE_COLORS["blue-5"]));
-      const x = (time / TOTAL_TIME) * p.width;
+      const x = getXFromTime();
 
       p.rect(x, 0, 1, p.height);
 
@@ -40,7 +113,7 @@ const PaintMusicR1 = (props: Props) => {
     };
   };
 
-  return <P5Sketch id="canvas-wrapper" sketch={Sketch} />;
+  return <P5Sketch id="music-player" sketch={Sketch} />;
 };
 
 export default PaintMusicR1;

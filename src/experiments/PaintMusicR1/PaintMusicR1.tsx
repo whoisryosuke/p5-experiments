@@ -39,9 +39,9 @@ const PaintMusicR1 = (props: Props) => {
         50,
         40
       );
-      brushGradient.addColorStop(0, "rgba(0,0,0,1)");
-      brushGradient.addColorStop(0.9, "rgba(0,0,0,0)");
-      brushGradient.addColorStop(1, "rgba(0,0,0,0)");
+      brushGradient.addColorStop(0, "rgba(0,255,0,1)");
+      brushGradient.addColorStop(0.9, "rgba(0,255,0,0)");
+      brushGradient.addColorStop(1, "rgba(0,255,0,0)");
       offscreenCtx.fillStyle = brushGradient;
       offscreenCtx.strokeStyle = "rgba(0, 0, 0, 0)";
 
