@@ -1,10 +1,16 @@
-import React, { CSSProperties, Suspense, useEffect, useRef } from "react";
+import React, {
+  CSSProperties,
+  HTMLProps,
+  Suspense,
+  useEffect,
+  useRef,
+} from "react";
 import p5 from "p5";
 import { BASE_COLORS } from "themes/colors/base";
 import { radToDeg } from "three/src/math/MathUtils";
 import { saveArt } from "@/helpers/drawing/saveArt";
 
-type Props = {
+type Props = HTMLProps<HTMLDivElement> & {
   width?: CSSProperties["width"];
   height?: CSSProperties["height"];
   sketch: (p: p5) => void;
@@ -23,7 +29,7 @@ const P5Sketch = ({ width, height, sketch, ...props }: Props) => {
     };
   }, [sketch]);
 
-  return <div ref={divRef}></div>;
+  return <div ref={divRef} {...props}></div>;
 };
 
 export default P5Sketch;
