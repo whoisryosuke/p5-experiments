@@ -36,8 +36,6 @@ const PaintMusicR1 = (props: Props) => {
     let time = 0;
     let audioCtx: AudioContext = null;
     let freqNodes: FreqNode[] = [];
-    // Number is index that maps to `freqNodes`
-    let audioNodes: number[] = [];
 
     const getXFromTime = () => {
       return (time / TOTAL_TIME) * p.width;
@@ -89,7 +87,7 @@ const PaintMusicR1 = (props: Props) => {
       // Play notes using the averaged data
       // In this case we'll use green color to control volume
       updateOscillatorsIntensity(segmentsAveraged);
-      playOscillators(segmentsAveraged);
+      // playOscillators(segmentsAveraged);
       segmentsAveraged.forEach((avg) => {});
 
       // Loop
@@ -103,19 +101,6 @@ const PaintMusicR1 = (props: Props) => {
       });
     };
 
-    const playOscillators = (volumes: number[]) => {
-      volumes.forEach((volume, index) => {
-        const node = freqNodes[index];
-        // 0? Don't play sound
-        if (volume <= 0) {
-          // Disconnect all prev nodes
-          node.gain.disconnect();
-        }
-        // Play sound
-        node.gain.connect(audioCtx.destination);
-      });
-    };
-
     const stopSound = () => {
       disconnectGainNodes();
     };
@@ -123,22 +108,8 @@ const PaintMusicR1 = (props: Props) => {
     const disconnectGainNodes = () => {
       // Disconnect all prev nodes
       freqNodes.forEach((node) => {
-        node.gain.disconnect();
-      });
-    };
-
-    const connectAudioNodes = () => {
-      // Disconnect all prev nodes
-      freqNodes.forEach((node) => {
-        node.osc.disconnect();
-        node.gain.disconnect();
-      });
-
-      // Chain audio nodes to output
-      audioNodes.forEach((nodeIndex) => {
-        const nodes = freqNodes[nodeIndex];
-        nodes.osc.connect(nodes.gain);
-        nodes.gain.connect(audioCtx.destination);
+        // node.gain.disconnect();
+        node.gain.gain.value = 0;
       });
     };
 
@@ -153,6 +124,10 @@ const PaintMusicR1 = (props: Props) => {
       // Setup 12 oscillators for each note that needs to play
       new Array(12).fill(0).forEach((_, index) => {
         const gain = audioCtx.createGain();
+        // Start volume at 0
+        gain.gain.value = 0;
+
+        // Create oscillator
         const osc = audioCtx.createOscillator();
         osc.type = "sine";
         // Oscillators use frequency to determine "sound".
@@ -164,10 +139,12 @@ const PaintMusicR1 = (props: Props) => {
         // We connect oscillator to gain
         // To make sound - we just connect/disconnect gain node from output
         osc.connect(gain);
+        gain.connect(audioCtx.destination);
 
         // The way oscillators work - once you stop, they have to be recreated
         // So we start here and when we want to play, we connect oscillator to output.
         // And to stop playing, we disconnect it
+        // but in our case - we'll just turn the volume down -- even simpler!
         osc.start();
 
         freqNodes.push({ osc, gain });
