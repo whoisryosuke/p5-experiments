@@ -38,9 +38,9 @@ const PaintWithMouseR3 = (props: Props) => {
         50,
         40
       );
-      brushGradient.addColorStop(0, "rgba(0,0,0,1)");
-      brushGradient.addColorStop(0.9, "rgba(0,0,0,0)");
-      brushGradient.addColorStop(1, "rgba(0,0,0,0)");
+      brushGradient.addColorStop(0, "rgb(0, 68, 255)");
+      brushGradient.addColorStop(0.9, "rgba(0, 204, 255, 0)");
+      brushGradient.addColorStop(1, "rgba(0, 13, 255, 0)");
       offscreenCtx.fillStyle = brushGradient;
       offscreenCtx.strokeStyle = "rgba(0, 0, 0, 0)";
 

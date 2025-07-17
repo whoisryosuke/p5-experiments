@@ -10,14 +10,23 @@ export const createGridLines = (p: p5, lineNumber: number) => {
   }
 };
 
-export const createGridBoxes = (p: p5, lineNumber: number) => {
-  p.strokeWeight(0.5);
-  p.stroke(p.color(BASE_COLORS["gray-8"]));
-  for (let x = 0; x < lineNumber; x++) {
-    for (let y = 0; y < lineNumber; y++) {
-      const newX = p.map(x, 0, lineNumber, 0, p.width);
-      const newY = p.map(y, 0, lineNumber, 0, p.height);
+export const createGridBoxes = (
+  p: p5,
+  xNumLines: number,
+  yNumLines?: number,
+  strokeWeight: number = 1.5,
+  xColor: string = BASE_COLORS["gray-1"],
+  yColor: string = BASE_COLORS["gray-4"]
+) => {
+  p.strokeWeight(strokeWeight);
+  const yNum = yNumLines ?? xNumLines;
+  for (let x = 0; x < xNumLines; x++) {
+    for (let y = 0; y < yNum; y++) {
+      const newX = p.map(x, 0, xNumLines, 0, p.width);
+      const newY = p.map(y, 0, yNum, 0, p.height);
+      p.stroke(p.color(xColor));
       p.line(newX, 0, newX, p.height);
+      p.stroke(p.color(yColor));
       p.line(0, newY, p.width, newY);
     }
   }

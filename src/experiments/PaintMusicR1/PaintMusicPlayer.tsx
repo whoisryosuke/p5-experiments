@@ -1,5 +1,7 @@
 import P5Sketch from "@/components/P5Sketch";
+import { createGridBoxes } from "@/helpers/drawing/createGridLines";
 import { drawCircle } from "@/helpers/drawing/drawCircle";
+import { NOTE_LETTERS, NOTE_LETTERS_WITH_BLACK } from "@/helpers/drawing/piano";
 import { saveArt } from "@/helpers/drawing/saveArt";
 import p5 from "p5";
 import React, { useEffect, useRef } from "react";
@@ -173,6 +175,21 @@ const PaintMusicR1 = (props: Props) => {
       p.rect(x, 0, 1, p.height);
 
       if (playing) time += p.deltaTime;
+
+      createGridBoxes(p, 6, 12);
+      const gridSegmentHeight = p.height / 12;
+
+      p.noStroke();
+      p.fill(p.color(BASE_COLORS["gray-4"]));
+      p.textStyle("bold");
+      p.textSize(24);
+      new Array(12).fill(0).forEach((_, index) => {
+        p.text(
+          NOTE_LETTERS_WITH_BLACK[index],
+          8,
+          gridSegmentHeight * (index + 1) - gridSegmentHeight / 2 + 8
+        );
+      });
     };
   };
 
